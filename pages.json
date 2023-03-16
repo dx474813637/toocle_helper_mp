@@ -21,8 +21,10 @@
 	"pages": [ //pages数组中第一项表示应用启动页，参考：https://uniapp.dcloud.io/collocation/pages
 		{
 			"path": "pages/index/index",
-			"style": {
-				"navigationBarTitleText": ""
+			"style": { 
+				"navigationBarTextStyle": "white",
+				"navigationBarBackgroundColor": "#4aa3ff",
+				"backgroundColor": "#4aa3ff"
 			}
 		}, {
 			"path": "pages/todolist/todolist",
@@ -55,9 +57,9 @@
 		}
 	],
 	"globalStyle": {
-		"navigationBarTextStyle": "white",
+		"navigationBarTextStyle": "black",
 		"navigationBarTitleText": "生意宝小助理",
-		"navigationBarBackgroundColor": "#4aa3ff",
+		"navigationBarBackgroundColor": "#fff",
 		"backgroundColor": "#F8F8F8"
 	},
 	"uniIdRouter": {}
