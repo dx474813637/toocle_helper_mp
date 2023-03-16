@@ -1,0 +1,64 @@
+{
+	// "insetLoader": {
+	// 	//配置
+	// 	"config": {
+	// 		//将需要引入的组件名起了个confirm的名字在下面label中使用
+	// 		//右侧"<test ref='confirm' />"为需要插入的组件标签
+	// 		"confirm": "<u-toast ref='uToast' />"
+	// 	},
+	// 	// 全局配置  
+	// 	//需要挂在的组件名
+	// 	"label": ["confirm"],
+	// 	//根元素的标签类型 也就是插入到页面哪个根元素下默认为div 但是uniapp中需要写为view
+	// 	"rootEle": "view"
+	// }, 
+	"easycom": {
+		// 注意一定要放在custom里，否则无效，https://ask.dcloud.net.cn/question/131175
+		"custom": {
+			"^u-(.*)": "uview-plus/components/u-$1/u-$1.vue"
+		}
+	},
+	"pages": [ //pages数组中第一项表示应用启动页，参考：https://uniapp.dcloud.io/collocation/pages
+		{
+			"path": "pages/index/index",
+			"style": {
+				"navigationBarTitleText": ""
+			}
+		}, {
+			"path": "pages/todolist/todolist",
+			"style": {
+				"navigationBarTitleText": "",
+				"enablePullDownRefresh": false
+			}
+
+		}, {
+			"path": "pages/history/history",
+			"style": {
+				"navigationBarTitleText": "",
+				"enablePullDownRefresh": false
+			}
+
+		}, {
+			"path": "pages/user/user",
+			"style": {
+				"navigationBarTitleText": "",
+				"enablePullDownRefresh": false
+			}
+
+		}, {
+			"path": "pages/login/login",
+			"style": {
+				"navigationBarTitleText": "",
+				"enablePullDownRefresh": false
+			}
+
+		}
+	],
+	"globalStyle": {
+		"navigationBarTextStyle": "white",
+		"navigationBarTitleText": "生意宝小助理",
+		"navigationBarBackgroundColor": "#4aa3ff",
+		"backgroundColor": "#F8F8F8"
+	},
+	"uniIdRouter": {}
+}
