@@ -1,3 +1,13 @@
+import {
+	userStore
+} from '@/stores/user';
+import {
+	menusStore
+} from '@/stores/base';
+import pinia  from '@/stores/index.js'; 
+
+const user = userStore(pinia)
+const menus = menusStore(pinia)
 /**
  * @description 自定义路由拦截
  */ 
@@ -28,7 +38,7 @@ const userStateList =  [{
  	},
  ]
  
-export function basePermission(e, $ws) {
+export function permissionBase(e, $ws) {
 	 
 	 	const url = e.url.split('?')[0]
 	 	console.log('url:addInterceptor ===> ', e.url)
@@ -49,7 +59,7 @@ export function basePermission(e, $ws) {
 	 		})
 	 	}
 	 	// 不是白名单并且没有token
-	 	if (!pass && store.state.user.login == 0) {
+	 	if (!pass && user.login == 0) {
 	 	
 	 		uni.setStorageSync('prePage', e.url)
 	 		uni.navigateTo({
@@ -74,7 +84,7 @@ export function basePermission(e, $ws) {
 	 		})
 	 	} 
 	 	if (!pass) { 
-	 		if (store.state.user.myCpy.hasOwnProperty('state') && store.state.user.myCpy
+	 		if (user.myCpy.hasOwnProperty('state') && user.myCpy
 	 			.state == 0) { 
 	 			uni.showToast({
 	 				title: '请等待用户信息审核成功',
@@ -82,7 +92,7 @@ export function basePermission(e, $ws) {
 	 			})
 	 			return false
 	 		}
-	 		if (!store.state.user.myCpy.hasOwnProperty('state')) {
+	 		if (!user.myCpy.hasOwnProperty('state')) {
 	 		console.log('=======>3')
 	 			uni.showModal({
 	 				title: '提示',
@@ -108,10 +118,10 @@ export function basePermission(e, $ws) {
 	 	e.url.split('?')[1]?.split('&').forEach(item => {
 	 		paramsObj[item.split('=')[0]] = item.split('=')[1]
 	 	})
-	 	store.commit('user/setPage', {
+		menus.saveCurrPage({
 	 		route: uni.$u.page(),
 	 		options: paramsObj
-	 	})
+	 	}) 
 		
 		return true
 }

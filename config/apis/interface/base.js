@@ -9,11 +9,19 @@ export const memu = (data) => http.get('memu', data)
 // zhushou_login 登录接口 login passwd
 // 测试账号100 密码123456
 export const zhushou_login = (data) => http.get('zhushou_login', data) 
+// logout 用户退出
+export const logout = (data) => http.get('logout', data) 
+
+
+// upimg 上传图片
+export const upimg = (data) => http.get('upimg', data) 
 
 // home 首页同事在搜内容
 export const home = (data) => http.get('home', data) 
 // company_list 首页的企业列表 参数p
 export const company_list = (data) => http.get('company_list', data) 
+// company_lista  最新完善 参数p
+export const company_lista = (data) => http.get('company_lista', data) 
 
 // company_list_login 列表 参数p cate=0 清单 1拨打 2客户
 export const company_list_login = (data) => http.get('company_list_login', data) 
@@ -30,7 +38,7 @@ export const join_customer = (data) => http.get('join_customer', data)
 // exit_customer 退出客户 参数id
 export const exit_customer = (data) => http.get('exit_customer', data) 
 
-// search_company 搜索企业 p 关键字terms 类别type 地区（省市区单个都可以，但不能一起）
+// search_company 搜索企业 p 关键字terms 类别type 地区area（省市区单个都可以，但不能一起）
 export const search_company = (data) => http.get('search_company', data) 
 // search_company_login 搜索清单 拨打 客户 参数跟搜索企业一致 多一个参数cate = 0清单 1拨打 2客户
 export const search_company_login = (data) => http.get('search_company_login', data) 
@@ -47,4 +55,10 @@ export const login_company_detail = (data) => http.get('login_company_detail', d
 export const company_update = (data) => http.get('company_update', data) 
 
 // add_company_tag 企业备注 参数info 备注内容 id是清单/拨打/客户 列表里的id。
+// 新增企业跟进/标签 
+// cate 1跟进 2标签 必填
+// info 内容 必填
+// riqi 跟进日期 跟进时必填
+// img 标签时不传或空，跟进时不是必填
 export const add_company_tag = (data) => http.get('add_company_tag', data) 
+

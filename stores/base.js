@@ -12,7 +12,8 @@ export const baseStore = defineStore('base', {
 				'appsecret': 'd34cv+9aniPoY1kcGGJThS+QmuYoKgH0oZZb1CSWtNR1MWNXsWFiFr4',
 			},
 			share_other: '',
-			themeColor: '#4aa3ff'
+			themeColor: '#4aa3ff',
+			empty: 'https://wx.rawmex.cn/Public/memu/data1.png',
 		};
 	},
 	getters: {
@@ -30,28 +31,27 @@ export const baseStore = defineStore('base', {
 
 export const menusStore = defineStore('menus', {
 	state: () => {
-		return { 
-			dx: '5184',
+		return {  
 			menus: [], 
 			currPage: {
 				route: '/pages/index/index',
 				options: {}
-			}
+			},
+			cpy_type: [[]]
 		};
 	},
 	getters: {
 		menusActive: (state) => state.menus.findIndex(ele => ele.route == state.currPage.route) ,
-	},
-	// 也可以这样定义
-	// state: () => ({ count: 0 })
+	}, 
 	actions: {
-		saveShareInfo(data) {
-			this.share_other = data;
+		saveCurrPage(data) {
+			this.currPage = data;
 		},
 		async getMenusData() {
 			try {
 				const res = await apis.memu() 
-				if(res.code == 1) {
+				if(res.code == 1) { 
+					this.cpy_type = [res.type]
 					this.menus = res.list.map((ele, index) => {
 						let paramsStr = ele.url.split('?')[1] || ''
 						let paramsObj = {}

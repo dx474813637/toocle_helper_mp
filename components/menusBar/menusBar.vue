@@ -1,7 +1,6 @@
 <template>
-	<view class="tabbar" style="box-shadow: `0 0 10rpx rgba(90,90,90,.4)`" >
-		{{menusstore.dx}}
-		<!-- <u-tabbar
+	<view class="tabbar" style="box-shadow: `0 0 10rpx rgba(90,90,90,.4)`" > 
+		<u-tabbar
 			:value="menusActive"
 			inactiveColor="#666"
 			:activeColor="base.themeColor" 
@@ -26,7 +25,7 @@
 				></image>
 			</u-tabbar-item>
 				
-		</u-tabbar> -->
+		</u-tabbar>
 	</view>
 </template>
 <script setup>
@@ -48,17 +47,12 @@
 	// const menusRef  = computed(() => menus.menus);
 	// const menusActiveRef = computed(() => menus.menusActive); 
 	const $api = inject('$api')  
-	onMounted(async () => {
-		if(menus.value.length == 0) {
-			await menusstore.getMenusData()
-		}
-		console.log(menus)
-	})
+	menusstore.getMenusData() 
 	
 	 
 	
 	function tabsClick(index) {
-		const item = menus.menus[index]
+		const item = menus.value[index]
 		console.log(item)
 		if(item.type == 1 ){
 			uni.reLaunch({

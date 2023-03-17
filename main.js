@@ -1,6 +1,6 @@
 import App from './App'
 import uviewPlus from 'uview-plus'
-import * as Pinia from 'pinia';
+import pinia from '@/stores/index.js';
 import apis from './config/apis/index'
 import ws from '@/utils/webstocket.js'
 
@@ -18,8 +18,7 @@ export function createApp() {
 	
 	const app = createSSRApp(App)
 	
-	// app.config.globalProperties.$axios = axios;
-	const pinia = Pinia.createPinia()
+	// app.config.globalProperties.$axios = axios; 
 	app.provide('$http', uni.$u.http); 
 	app.provide('$api', apis); 
 	app.provide('$ws', ws); 
@@ -27,10 +26,10 @@ export function createApp() {
 	// app.component('uToast', uToast)
 	app.use(uviewPlus).use(pinia);
 	
-	setHttp(pinia, ws)
+	setHttp(ws)
 	// routingIntercept(app)
 	return {
 		app,
-		Pinia
+		pinia
 	}
 }

@@ -1,13 +1,14 @@
 // import {tim_online_login} from '@/utils/tims_login.js'
 // import store from '@/store'
 
+import pinia  from '@/stores/index.js';
 import {
 	baseStore
 } from '@/stores/base';
 const sys = uni.getSystemInfoSync();
 const duration = sys.osName == 'ios' ? 2000 : 3000  
 
-export default function(pinia, $ws) { 
+export default function($ws) { 
 	const base = baseStore(pinia)
 	const http = uni.$u.http
 	// import md5Libs from "@/utils/md5";

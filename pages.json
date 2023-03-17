@@ -24,7 +24,8 @@
 			"style": { 
 				"navigationBarTextStyle": "white",
 				"navigationBarBackgroundColor": "#4aa3ff",
-				"backgroundColor": "#4aa3ff"
+				"backgroundColor": "#4aa3ff",
+				"onReachBottomDistance": 80
 			}
 		}, {
 			"path": "pages/todolist/todolist",
@@ -55,7 +56,16 @@
 			}
 
 		}
-	],
+	    ,{
+            "path" : "pages/search/search",
+            "style" :                                                                                    
+            {
+                "navigationBarTitleText": "",
+                "enablePullDownRefresh": false
+            }
+            
+        }
+    ],
 	"globalStyle": {
 		"navigationBarTextStyle": "black",
 		"navigationBarTitleText": "生意宝小助理",
