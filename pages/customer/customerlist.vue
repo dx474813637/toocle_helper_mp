@@ -1,6 +1,6 @@
 <template>
 	<view class="w">
-		<view class="header u-flex u-flex-items-center u-flex-between u-p-l-20 u-p-r-20">
+		<!-- <view class="header u-flex u-flex-items-center u-flex-between u-p-l-20 u-p-r-20">
 			<image 
 				class="header-banner" 
 				src="https://wx.rawmex.cn/Public/zhushou/zs1.png" 
@@ -17,47 +17,33 @@
 					borderColor="transparent"
 				></u-tag>
 			</view>
-		</view>
+		</view> -->
+		
 		<u-sticky zIndex="50" bgColor="#fff">
-			<view class="header-sticky u-flex u-flex-items-center u-flex-between u-p-l-20 u-p-r-20"> 
-				<view class="item u-flex u-flex-items-center">
-					<u-icon name="order" color="#f90" size="20" ></u-icon>
-					<view class="text-primary u-font-32 u-m-l-15">我的拨打清单</view>
-				</view>
-				<view class="item u-flex u-flex-items-center">
-					<u-tag
-						type="error" 
-						plain 
-						plainFill
-						size="mini"
-						icon="trash"
-						text="一键清空" 
-						borderColor="transparent"
-						@click="clearAllBtn"
-					></u-tag>
-					<!-- <u-icon name="trash" color="#ff0000" size="14" ></u-icon>
-					<view class="text-error u-font-26 u-m-l-15">一键清空</view> -->
-				</view>
+			<view class="header-sticky">
+				<view class="search-w u-p-20 bg-white">
+					<u-search 
+						placeholder="输入搜索关键字" 
+						v-model="params.terms" 
+						shape="square"
+						:showAction="false"
+						bgColor="#f8f8f8"  
+						@search="handleSearch"
+					></u-search>
+				</view> 
 			</view>
-		</u-sticky> 
+		</u-sticky>
 		<view
 			class="list-item u-m-t-20 u-p-l-20 u-p-r-20"
 			v-for="item in cpy_list"
 			:key="item.id"
 		>
-			<cpyListCard 
-				:origin="item"
-				:btns="{
-					edit: 0,
-					call: 1,
-					add: 0,
-					remove: 1,
-					join_customer: 0
-				}"
-				@takePhoneBtn="takePhoneBtn"
-				@deletBtn="deletBtn"
+			<customerListCard 
+				:origin="item" 
 				@detail="handledetail"
-			></cpyListCard>
+				@labelManger="labelManger"
+				@addEventBtn="addEventBtn"
+			></customerListCard>
 		</view>
 		<template v-if="cpy_list.length == 0">
 			<u-empty
@@ -74,6 +60,13 @@
 		<u-safe-bottom></u-safe-bottom>
 		<menusBar ></menusBar>
 	</view>
+	<labelPopup
+		:origin="mangerData"
+		:show="mangerShow"
+		@addTag="addTag"
+		@delTag="delTag"
+		@popclose="popclose"
+	></labelPopup>
 </template>
 
 <script setup>
@@ -101,19 +94,20 @@
 	const $api = inject('$api');
 	const params = reactive({
 		p: 1,
-		cate: 0, 
+		cate: 2,
+		terms: ''
 	}) 
-	const cpy_list = ref([])
+	const cpy_list = ref([]);
+	const mangerData = ref({})
+	const mangerShow =  ref(false)
 	const loadstatus = ref('loadmore') 
 	onLoad(async (options) => { 
 		init()
 	})
 	onReachBottom( () => {
 		getMoreData()
-	})
-	function submitPop() {
-		params.area = popInput.value
-		showInputPop.value = false
+	}) 
+	function handleSearch() {
 		init()
 	}
 	function initParamas() {
@@ -135,10 +129,14 @@
 		loadstatus.value = 'loading'
 		const res = await $api.company_list_login({ params })
 		if(res.code == 1) {
-			cpy_list.value = [...cpy_list.value, ...res.list.map(ele => {
-				ele.joinstatus = 'error'
-				return {...ele}
-			})]
+			cpy_list.value = [
+				{tags: ['标签1','标签2231','标签1','标签2231','标签3','标签A','标签V','标签DSA']},
+				...cpy_list.value, 
+				...res.list.map(ele => {
+					ele.joinstatus = 'error'
+					return {...ele}
+				})
+			]
 			if( params.p == res.pages ) {
 				loadstatus.value = 'nomore'
 			}else {
@@ -172,51 +170,49 @@
 			}, 
 		});
 	} 
-	async function deletBtn({data}) {
+	async function join2Btn({data}) {
 		const {id} = data;
 		let index = cpy_list.value.findIndex(ele => ele.id == id)
-		if(cpy_list.value[index].deletstatus == 'loading') return
-		cpy_list.value[index].deletstatus = 'loading'
-		const res = await $api.exit_qingdan({params: {id}})
+		if(cpy_list.value[index].join2status == 'loading') return
+		cpy_list.value[index].join2status = 'loading'
+		const res = await $api.join_customer({params: {id}})
 		if(res.code == 1) { 
-			cpy_list.value.splice(index, 1) 
-			uni.showToast({
-				title: res.msg,
-				icon: 'none'
-			})
+			cpy_list.value[index].join2status = 'success'
 		}else {
-			cpy_list.value[index].deletstatus = 'error'
+			cpy_list.value[index].join2status = 'error'
 		}
-	}
-	
-	function clearAllBtn() {
-		uni.showModal({
-			title: '提示',
-			content: '是否清空我的拨打清单',
-			success: async function (e) {
-				if (e.confirm) {
-					const res = await $api.clear_qingdan()
-					if(res.code == 1) {
-						
-						uni.showToast({
-							title: res.msg,
-							icon: 'success'
-						})
-						initParamas()
-					}
-				} else if (e.cancel) {
-					console.log('用户点击取消');
-				}
-			}
-		});
-	}
-	
+		
+	}  
+	 
 	function handledetail({data}) {
 		base.handleGoto({
-			url: '/pages/cpy/cpy',
+			url: '/pages/customer/customer',
 			params: {
-				cid: data.id,
-				ctype: '2'
+				cid: data.id, 
+			}
+		})
+	}
+	
+	async function addTag({data}) {
+		// mangerData.push('新增标签11')
+	}
+	async function delTag({tag, index}) {
+		
+	}
+	function popclose( ) { 
+		mangerShow.value = false
+		mangerData.value = {}
+	}
+	function labelManger({data}) {
+		// console.log(data)
+		mangerData.value = data;
+		mangerShow.value = true
+	}
+	function addEventBtn({data}) {
+		base.handleGoto({
+			url: '/pages/customer/addevent',
+			params: {
+				id: data.id
 			}
 		})
 	}
@@ -227,8 +223,7 @@
 		padding-bottom: 60px;
 	}
 	.header-sticky {
-		border-bottom: 1rpx solid #eee;
-		height: 35px;
+		border-bottom: 1rpx solid #eee; 
 	}
 	.header {
 		height: 50px;

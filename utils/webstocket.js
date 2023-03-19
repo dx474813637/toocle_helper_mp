@@ -29,7 +29,7 @@ let ws = {
     send
 }
  
-function init() {
+function init() { 
     socketTask = uni.connectSocket({
         url: wsUrl,
         complete: (res)=> {console.log("WebSocket连接成功",res)}
@@ -42,8 +42,8 @@ function init() {
 		let login2 = data.login
 		
 		
-		send('{"type":"login","client_name":"'+login+'","room_id":"rawmex_xcx","token":"'+token+'","login":"'+login+'"}')
-		if(getCurrentPages() && getCurrentPages()[0]) send('{"type":"xcx","client_name":"'+login+'","rawmex_login":"'+login2+'","room_id":"rawmex_xcx","token":"'+token+'","login":"'+login+'","content":"'+getCurrentPages()[0].$page.fullPath+'"}')
+		send('{"type":"login","client_name":"'+login+'","room_id":"zhushou_xcx","token":"'+token+'","login":"'+login+'"}')
+		if(getCurrentPages() && getCurrentPages()[0]) send('{"type":"xcx","client_name":"'+login+'","rawmex_login":"'+login2+'","room_id":"zhushou_xcx","token":"'+token+'","login":"'+login+'","content":"'+getCurrentPages()[0].$page.fullPath+'"}')
 		
         clearInterval(heartBeatInterval)
         clearInterval(reconnectInterval)

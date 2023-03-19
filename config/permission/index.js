@@ -2,12 +2,14 @@ import {
 	userStore
 } from '@/stores/user';
 import {
-	menusStore
-} from '@/stores/base';
+	menusStore,
+	baseStore
+} from '@/stores/base'; 
 import pinia  from '@/stores/index.js'; 
 
 const user = userStore(pinia)
 const menus = menusStore(pinia)
+const base = baseStore(pinia)
 /**
  * @description 自定义路由拦截
  */ 
@@ -41,11 +43,10 @@ const userStateList =  [{
 export function permissionBase(e, $ws) {
 	 
 	 	const url = e.url.split('?')[0]
-	 	console.log('url:addInterceptor ===> ', e.url)
-	 	
+	 	console.log('url:addInterceptor ===> ', e.url) 
 	 	const r = uni.getStorageSync('WebSocketInfo')
 	 	$ws.send('{"type":"xcx","client_name":"' + r.w_login + '","rawmex_login":"' +
-	 		r.login + '","room_id":"rawmex_xcx","token":"' + r.w_token +
+	 		r.login + '","room_id":"zhushou_xcx","token":"' + r.w_token +
 	 		'","login":"' + r.w_login + '","content":"' + e.url + '"}')
 	 		
 	 	// 判断当前窗口是白名单，如果是则不重定向路由
@@ -62,15 +63,8 @@ export function permissionBase(e, $ws) {
 	 	if (!pass && user.login == 0) {
 	 	
 	 		uni.setStorageSync('prePage', e.url)
-	 		uni.navigateTo({
-	 			url: "/pages/index/login/login",
-	 			success() {
-	 				uni.showToast({
-	 					title: '请先登录',
-	 					icon: 'none'
-	 				})
-	 			}
-	 		})
+			
+			base.handleGoto({url: '/pages/login/login', type: 'redirectTo'}) 
 	 		return false
 	 	}
 	 	
@@ -84,42 +78,42 @@ export function permissionBase(e, $ws) {
 	 		})
 	 	} 
 	 	if (!pass) { 
-	 		if (user.myCpy.hasOwnProperty('state') && user.myCpy
-	 			.state == 0) { 
-	 			uni.showToast({
-	 				title: '请等待用户信息审核成功',
-	 				icon: 'none'
-	 			})
-	 			return false
-	 		}
-	 		if (!user.myCpy.hasOwnProperty('state')) {
-	 		console.log('=======>3')
-	 			uni.showModal({
-	 				title: '提示',
-	 				content: '请先完善用户信息',
-	 				confirmText: '去完善',
-	 				cancelText: '考虑一下',
-	 				success: function(res) {
-	 					if (res.confirm) {
-	 						uni.setStorageSync('prePage', e.url)
-	 						uni.navigateTo({
-	 							url: "/pages/my/user/info"
-	 						})
-	 					} else if (res.cancel) {
-	 						console.log('用户点击取消');
-	 					}
-	 				}
-	 			});
-	 			return false
-	 		} 
+	 		// if (user.myCpy.hasOwnProperty('state') && user.myCpy
+	 		// 	.state == 0) { 
+	 		// 	uni.showToast({
+	 		// 		title: '请等待用户信息审核成功',
+	 		// 		icon: 'none'
+	 		// 	})
+	 		// 	return false
+	 		// }
+	 		// if (!user.myCpy.hasOwnProperty('state')) {
+	 		// console.log('=======>3')
+	 		// 	uni.showModal({
+	 		// 		title: '提示',
+	 		// 		content: '请先完善用户信息',
+	 		// 		confirmText: '去完善',
+	 		// 		cancelText: '考虑一下',
+	 		// 		success: function(res) {
+	 		// 			if (res.confirm) {
+	 		// 				uni.setStorageSync('prePage', e.url)
+	 		// 				uni.navigateTo({
+	 		// 					url: "/pages/my/user/info"
+	 		// 				})
+	 		// 			} else if (res.cancel) {
+	 		// 				console.log('用户点击取消');
+	 		// 			}
+	 		// 		}
+	 		// 	});
+	 		// 	return false
+	 		// } 
 	 	} 
 	 	//记录路径参数数据 底部菜单跳转判断买卖盘用
 	 	let paramsObj = {}
 	 	e.url.split('?')[1]?.split('&').forEach(item => {
 	 		paramsObj[item.split('=')[0]] = item.split('=')[1]
 	 	})
-		menus.saveCurrPage({
-	 		route: uni.$u.page(),
+		menus.saveCurPage({
+	 		route: url,
 	 		options: paramsObj
 	 	}) 
 		
@@ -132,7 +126,7 @@ export default async function($ws) {
 	// 用遍历的方式分别为,uni.navigateTo,uni.redirectTo,uni.reLaunch,uni.switchTab这4个路由方法添加拦截器
 	list.forEach(item => {
 		uni.addInterceptor(item, {
-			invoke(e) { 
+			invoke(e) {  
 				let res = permissionBase(e, $ws)
 				if(!res) return false
 				return e

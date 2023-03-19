@@ -21,7 +21,7 @@ export function share() {
 	const customShareParams = reactive({})
 	const pages = getCurrentPages()
 	const curPage = pages[pages.length == 1? 0: pages.length - 1]
-	console.log(curPage)
+	// console.log(curPage)
 	onLoad((options) => {
 		
 		if (options && options.poster) {

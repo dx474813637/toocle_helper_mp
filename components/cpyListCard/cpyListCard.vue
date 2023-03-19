@@ -1,6 +1,6 @@
 <template>
-	<view class="card bg-white uni-shadow-base u-radius-6 u-p-25">
-		<view class="card-main">
+	<view class="card bg-white uni-shadow-base u-radius-6 u-p-25"> 
+		<view class="card-main" @click="cardClick">
 			<view class="cpy-name u-m-b-20 u-flex u-flex-items-center">
 				<view class="u-m-r-10" v-if="origin.type">
 					<u-tag size="mini" :text="origin.type" type="warning" plain plainFill borderColor="transparent"></u-tag>
@@ -21,7 +21,7 @@
 						plain 
 						plainFill 
 						borderColor="transparent" 
-						@click="handleTagsCopy"
+						@click.stop="handleTagsCopy"
 					></u-tag>
 				</view>
 				<view class="u-m-r-10 u-m-b-10" v-if="$u.test.email(origin.a14)">
@@ -34,14 +34,16 @@
 						plain 
 						plainFill 
 						borderColor="transparent" 
-						@click="handleTagsCopy"
+						@click.stop="handleTagsCopy"
 					></u-tag>
 				</view>
 			</view>
 			<view class="info u-flex u-flex-items-center u-flex-between u-font-24 u-p-b-20 u-border-bottom">
 				<view class="item u-flex-1">
 					<view>
-						<view class="text-base u-font-26 u-line-1">{{origin.a3}}</view>
+						<view class="text-base u-font-26 u-line-1">
+							<u--text size="13" :text="origin.a3" mode="name" format="encrypt"></u--text>
+						</view>
 						<view class="text-light">法定代表人</view>
 					</view>
 				</view>
@@ -60,14 +62,38 @@
 			</view>
 		</view>
 		<view class="card-btns u-flex u-flex-items-center u-flex-between u-p-t-20">
-			<view class="item">
-				<u-button size="small" icon="info-circle" type="info" plain :customStyle="btnStyle">纠错完善</u-button>
+			<view class="item" v-if="btns.edit">
+				<u-button size="small" icon="info-circle" type="info" plain :customStyle="btnStyle" text="纠错完善"></u-button>
 			</view>
-			<view class="item">
-				<u-button size="small" icon="plus-circle" type="error" :customStyle="btnStyle">加入清单</u-button>
+			<view class="item" v-if="origin.a12 && btns.call">
+				<u-button size="small" icon="phone-fill"  type="primary" :customStyle="btnStyle" @click.stop="takePhoneBtn" text="极速联系"></u-button>
 			</view>
-			<view class="item">
-				<u-button size="small" icon="phone-fill"  type="primary" :customStyle="btnStyle" @click="takePhoneBtn">极速联系</u-button>
+			<view class="item" v-if="btns.join_customer">
+				<u-button size="small" icon="plus-circle"  type="warning" :customStyle="btnStyle" @click.stop="join2Btn" text="加入通讯录"></u-button>
+			</view>
+			<view class="item" v-if="btns.add">
+				<u-button 
+					size="small" 
+					:icon="origin.joinstatus == 'success'? 'checkmark-circle' :'plus-circle'" 
+					:type="origin.joinstatus == 'success'? 'success' :'error'"  
+					throttleTime="500"
+					:customStyle="btnStyle" 
+					@click.stop="joinBtn"
+					:loading="origin.joinstatus == 'loading'"
+					:text="origin.joinstatus == 'success'? '加入成功' :'加入清单'"
+					></u-button>
+			</view>
+			<view class="item" v-if="btns.remove">
+				<u-button 
+					size="small" 
+					icon="trash" 
+					type="error"  
+					throttleTime="500"
+					:customStyle="btnStyle" 
+					@click.stop="deletBtn"
+					:loading="origin.deletstatus == 'loading'"
+					text="移出清单"
+					></u-button>
 			</view>
 		</view>
 	</view>
@@ -87,6 +113,7 @@
 		baseStore
 	} from '@/stores/base';
 	import { storeToRefs } from 'pinia' 
+import { join_customer } from '../../config/apis/interface/base';
 	
 	const btnStyle = reactive({
 		borderRadius: '5px',
@@ -101,10 +128,26 @@
 			return {}
 		},
 	  },
+	  btns: {
+		  type: Object,
+		  default: () => ({
+			  edit: 0,
+			  call: 0,
+			  add: 0,
+			  remove: 0,
+			  join_customer: 0
+		  })
+	  }
 	})
 	
 	
-	const emits = defineEmits(["takePhoneBtn"]);
+	const emits = defineEmits([
+		"takePhoneBtn", 
+		"joinBtn",
+		"join2Btn",
+		"detail",
+		"deletBtn"
+	]);
 	
 	function handleTagsCopy(name) { 
 		uni.setClipboardData({
@@ -118,7 +161,26 @@
 		});
 	}
 	function takePhoneBtn() {
+		//拨打
 		emits("takePhoneBtn", {data: props.origin});
+	}
+	function joinBtn() {
+		//加入清单
+		if(props.origin.joinstatus != 'error') return
+		emits("joinBtn", {data: props.origin});
+	}
+	function join2Btn() { 
+		//加入通讯录
+		if(props.origin.join2status != 'error') return
+		emits("join2Btn", {data: props.origin});
+	}
+	function deletBtn() {
+		// 移除清单 
+		if(props.origin.deletstatus != 'error') return
+		emits("deletBtn", {data: props.origin});
+	}
+	function cardClick() { 
+		emits("detail", {data: props.origin});
 	}
 	
 </script>

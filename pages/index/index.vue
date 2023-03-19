@@ -22,10 +22,11 @@
 					</view>
 					<view class="u-flex-1">
 						<template v-if="search_type_key == 'type'">
-							<view @click="type_show = true" >
+							<view class="u-p-l-30 u-p-r-30" @click="type_show = true" >
 								<u--input
 									suffixIcon="arrow-down" 
 									readonly
+									placeholder="请下拉选择类型" 
 									v-model="type_text"
 									suffixIconStyle="font-size: 16px"
 									border="none"
@@ -52,6 +53,7 @@
 			</view>
 		</u-sticky>
 		<u-picker 
+			title="选择搜索类型"
 			:show="search_type_show" 
 			:columns="search_type_list"
 			closeOnClickOverlay
@@ -61,8 +63,9 @@
 			@confirm="search_type_confirm"
 		></u-picker>
 		<u-picker 
+			title="选择类型"
 			:show="type_show" 
-			:columns="menus.cpy_type"
+			:columns="menus.cpy_type_origin"
 			closeOnClickOverlay 
 			@close="type_show = false"
 			@cancel="type_show = false"
@@ -79,7 +82,7 @@
 					lineHeight="0"
 					:list="search_list" 
 					@click="tabsClick"
-					keyName="name"
+					keyName="terms"
 					activeStyle="color: #fff;font-size: 12px"
 					inactiveStyle="color: #fff;font-size: 12px"
 					:itemStyle="{
@@ -103,7 +106,7 @@
 						:list="cpy_tabs_list" 
 						:activeStyle="{
 							color: base.themeColor,
-							fontSize: '18px',
+							fontSize: '16px',
 							fontWeight: 'bold'
 						}"
 						:lineColor="baseStore.themeColor"
@@ -120,7 +123,16 @@
 			>
 				<cpyListCard 
 					:origin="item"
+					:btns="{
+						edit: 1,
+						call: 1,
+						add: 1,
+						remove: 0,
+						join_customer: 0
+					}"
 					@takePhoneBtn="takePhoneBtn"
+					@joinBtn="joinBtn"
+					@detail="handledetail"
 				></cpyListCard>
 			</view>
 			<template v-if="cpy_list.length == 0">
@@ -194,8 +206,8 @@
 	])
 	//企业类别picker 配置
 	const type_show = ref(false)
-	const type_current = ref(0) 
-	const type_text = computed(() => menus.cpy_type[0][type_current.value])
+	const type_current = ref(-1) 
+	const type_text = computed(() => type_current.value == -1 ? '' : menus.cpy_type_origin[0][type_current.value])
 	 
 	const cpy_tabs_list = ref([
 		{
@@ -221,15 +233,27 @@
 	})
 	
 	function handleSearch() {
-		
+		base.handleGoto({
+			url: '/pages/search/search',
+			params: {
+				[`${search_type_key.value}`]: keyword.value
+			}
+		})
 	}
+	
 	function search_type_confirm(e) { 
 		search_type_current.value = e.indexs[0]
 		search_type_show.value = false
 	}
-	function type_confirm(e) { 
+	function type_confirm(e) {  
 		type_current.value = e.indexs[0]
 		type_show.value = false
+		base.handleGoto({
+			url: '/pages/search/search',
+			params: {
+				[`${search_type_key.value}`]: e.value[0]
+			}
+		})
 	}
 	function initParamas() {
 		curP.value = 1;
@@ -257,7 +281,10 @@
 		loadstatus.value = 'loading'
 		const res = await $api[list_api.value]({params: {p: curP.value}}) ;
 		if(res.code == 1) {
-			cpy_list.value = [...cpy_list.value, ...res.list]
+			cpy_list.value = [...cpy_list.value, ...res.list.map(ele => {
+				ele.joinstatus = 'error'
+				return {...ele}
+			})]
 			if( curP.value == res.pages ) {
 				loadstatus.value = 'nomore'
 			}else {
@@ -265,8 +292,13 @@
 			}
 		}
 	}
-	function tabsClick() {
-		
+	function tabsClick(data) {
+		base.handleGoto({
+			url: '/pages/search/search',
+			params: {
+				[`${data.key}`]: data.terms
+			}
+		})
 	}
 	function cpytabsClick(data) {
 		console.log(data)
@@ -277,8 +309,42 @@
 	function takePhoneBtn({data}) {
 		const {a12} = data;
 		uni.makePhoneCall({
-			phoneNumber: `${a12}` //仅为示例
+			phoneNumber: `${a12}`,
+			async success(e) {
+				console.log(e)
+				const res = await $api.join_call({
+					params: {
+						cate: 1,
+						id: data.id
+					}
+				})
+			},
+			fail(e) {
+				console.log(e)
+			}, 
 		});
+	}
+	async function joinBtn({data}) {
+		const {id} = data;
+		let index = cpy_list.value.findIndex(ele => ele.id == id)
+		if(cpy_list.value[index].joinstatus == 'loading') return
+		cpy_list.value[index].joinstatus = 'loading'
+		const res = await $api.join_qingdan({params: {id}})
+		if(res.code == 1) { 
+			cpy_list.value[index].joinstatus = 'success'
+		}else {
+			cpy_list.value[index].joinstatus = 'done'
+		}
+	}
+	
+	function handledetail({data}) {
+		base.handleGoto({
+			url: '/pages/cpy/cpy',
+			params: {
+				cid: data.id,
+				ctype: '1'
+			}
+		})
 	}
 </script>
 

@@ -4,7 +4,7 @@ import {
 import apis from '@/config/apis/index';
 export const baseStore = defineStore('base', {
 	state: () => {
-		return { 
+		return {
 			configBaseURL: 'https://wx.rawmex.cn/Zhushou/',
 			configHeader: {
 				'content-type': 'application/x-www-form-urlencoded',
@@ -24,6 +24,9 @@ export const baseStore = defineStore('base', {
 	actions: {
 		saveShareInfo(data) {
 			this.share_other = data;
+		}, 
+		handleGoto(data) {
+			uni.$u.route(data)
 		},
 	},
 });
@@ -33,10 +36,15 @@ export const menusStore = defineStore('menus', {
 	state: () => {
 		return {  
 			menus: [], 
+			menus_wd: [],
+			menus_wd_broker: {},
+			new_memu: [],
+			news: 0,
 			currPage: {
-				route: '/pages/index/index',
+				route: '',
 				options: {}
 			},
+			cpy_type_origin: [[]],
 			cpy_type: [[]]
 		};
 	},
@@ -44,14 +52,24 @@ export const menusStore = defineStore('menus', {
 		menusActive: (state) => state.menus.findIndex(ele => ele.route == state.currPage.route) ,
 	}, 
 	actions: {
-		saveCurrPage(data) {
+		saveCurPage(data) {
+			console.log('saveCurPage', data)
 			this.currPage = data;
 		},
 		async getMenusData() {
 			try {
 				const res = await apis.memu() 
 				if(res.code == 1) { 
-					this.cpy_type = [res.type]
+					//获取搜索类型数据
+					this.cpy_type_origin = [res.type]
+					this.cpy_type =[ [{name: '全部', value: ''}, ...res.type.map(ele => {
+						return {
+							name: ele,
+							value: ele
+						}
+					})] ]
+					
+					//获取底部导航菜单
 					this.menus = res.list.map((ele, index) => {
 						let paramsStr = ele.url.split('?')[1] || ''
 						let paramsObj = {}
@@ -65,6 +83,14 @@ export const menusStore = defineStore('menus', {
 							options: paramsObj
 						}
 					})  
+					
+					//获取个人中心基础菜单
+					this.menus_wd = res.new_memu_wd
+					//获取个人中心broker菜单
+					this.menus_wd_broker = res.broker_memu
+					
+					this.new_memu = res.new_memu 
+					this.news = res.news
 				}
 			} catch (error) { 
 				return error

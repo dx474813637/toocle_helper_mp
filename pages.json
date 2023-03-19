@@ -21,7 +21,7 @@
 	"pages": [ //pages数组中第一项表示应用启动页，参考：https://uniapp.dcloud.io/collocation/pages
 		{
 			"path": "pages/index/index",
-			"style": { 
+			"style": {
 				"navigationBarTextStyle": "white",
 				"navigationBarBackgroundColor": "#4aa3ff",
 				"backgroundColor": "#4aa3ff",
@@ -29,38 +29,71 @@
 			}
 		}, {
 			"path": "pages/todolist/todolist",
-			"style": {
-				"navigationBarTitleText": "",
-				"enablePullDownRefresh": false
+			"style": { 
+				"enablePullDownRefresh": false,
+				"onReachBottomDistance": 80
 			}
 
 		}, {
 			"path": "pages/history/history",
-			"style": {
-				"navigationBarTitleText": "",
-				"enablePullDownRefresh": false
+			"style": { 
+				"enablePullDownRefresh": false,
+				"onReachBottomDistance": 80
 			}
 
 		}, {
 			"path": "pages/user/user",
-			"style": {
-				"navigationBarTitleText": "",
-				"enablePullDownRefresh": false
+			"style": { 
+				"enablePullDownRefresh": false,
+				"navigationStyle": "custom"
 			}
 
 		}, {
 			"path": "pages/login/login",
-			"style": {
-				"navigationBarTitleText": "",
+			"style": { 
 				"enablePullDownRefresh": false
+			}
+
+		}, {
+			"path": "pages/search/search",
+			"style": {
+
+				"enablePullDownRefresh": false,
+				"onReachBottomDistance": 80
 			}
 
 		}
 	    ,{
-            "path" : "pages/search/search",
+            "path" : "pages/cpy/cpy",
+            "style" :                                                                                    
+            { 
+                "enablePullDownRefresh": false
+            }
+            
+        }
+        ,{
+            "path" : "pages/customer/customer",
+            "style" :                                                                                    
+            {  
+                "enablePullDownRefresh": false
+            }
+            
+        }
+        ,{
+            "path" : "pages/customer/customerlist",
+            "style" :                                                                                    
+            { 
+                "navigationBarTitleText": "列表",
+                "enablePullDownRefresh": false,
+				"onReachBottomDistance": 80
+            }
+            
+        }
+        ,{
+            "path" : "pages/customer/addevent",
             "style" :                                                                                    
             {
-                "navigationBarTitleText": "",
+                "navigationBarTitleText": "添加跟进记录",
                 "enablePullDownRefresh": false
             }
             

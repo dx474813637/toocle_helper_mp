@@ -5,13 +5,17 @@
 		baseStore
 	} from '@/stores/base';
 	import {
+		userStore
+	} from '@/stores/user';
+	import {
 		onLaunch,
 		onShow,
 		onHide,
 	} from "@dcloudio/uni-app";
 	const $ws = inject('$ws')
 	
-	const base = baseStore()
+	const base = baseStore() 
+	const user = userStore() 
 	onLaunch(() => {
 		if (uni.canIUse('getUpdateManager')) {
 			const updateManager = uni.getUpdateManager();
@@ -42,7 +46,9 @@
 				}
 			});
 		}
+		
 		routingIntercept($ws)
+		
 	});
 	onShow(async (options) => {
 		console.log('opt.query', options.query)  
@@ -50,6 +56,12 @@
 			base.saveShareInfo(options.query.share_other) 
 		} 
 		if(uni.getStorageSync('WebSocketInfo')) $ws.init()
+		
+		if(user.user.login == 0) { 
+			uni.redirectTo({
+				url: '/pages/login/login'
+			})
+		}
 	});
 	onHide((options) => {
 		// console.log('App Hide')

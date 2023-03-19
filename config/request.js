@@ -5,11 +5,15 @@ import pinia  from '@/stores/index.js';
 import {
 	baseStore
 } from '@/stores/base';
+import {
+	userStore
+} from '@/stores/user';
 const sys = uni.getSystemInfoSync();
 const duration = sys.osName == 'ios' ? 2000 : 3000  
 
 export default function($ws) { 
 	const base = baseStore(pinia)
+	const user = userStore(pinia)
 	const http = uni.$u.http
 	// import md5Libs from "@/utils/md5";
 	const getTokenStorage = () => {
@@ -36,31 +40,31 @@ export default function($ws) {
 		}
 		
 	}
-	function get_xcx_code() {
-		return new Promise((resolve, rejected) => {
-			uni.login({
-				success: function (res){
-					resolve(res.code);
-				},
-				fail: err => {
-					md5flag = true
-					rejected(err)
-				}
-			});
-		});
-	}
+	// function get_xcx_code() {
+	// 	return new Promise((resolve, rejected) => {
+	// 		uni.login({
+	// 			success: function (res){
+	// 				resolve(res.code);
+	// 			},
+	// 			fail: err => {
+	// 				md5flag = true
+	// 				rejected(err)
+	// 			}
+	// 		});
+	// 	});
+	// }
 	
-	async function refreshToken() {
-		// token接口获取token值
-		try{
-			let code = await get_xcx_code();
-			console.log('code打印:',code)
-			return http.post('login_cancel',{code:code})
-		}catch(e){
-			return e
-		}
+	// async function refreshToken() {
+	// 	// token接口获取token值
+	// 	try{
+	// 		let code = await get_xcx_code();
+	// 		console.log('code打印:',code)
+	// 		return http.post('login_cancel',{code:code})
+	// 	}catch(e){
+	// 		return e
+	// 	}
 		
-	}
+	// }
 	// 初始化请求配置
 	http.setConfig((config) => {
 		/* config 为默认全局配置*/
@@ -95,13 +99,15 @@ export default function($ws) {
 			if (!isRefreshing) {
 				console.log('刷新token ing', config.url)
 				isRefreshing = true
-				refreshToken().then(res => {
+				user.refreshToken().then(res => {
 					console.log('获取token成功，存入头部',res)
+					user.saveUserInfo(res)
 					uni.setStorageSync('WebSocketInfo', res)
 					// tim_online_login()
-					console.log($ws)
+					// console.log($ws)
 					$ws.init()
 					uni.setStorageSync('poster', res.poster) 
+					uni.setStorageSync('user', res) 
 					let userid = ""
 					// if(res.errMsg != "request:ok") {
 					// 	userid = md5Libs.md5(formatDate(new Date()) + 'wsdz')
@@ -113,7 +119,10 @@ export default function($ws) {
 					})
 					
 					// }
-					
+					if(res.login == 0) { 
+						getCurrentPages().length > 0 && uni.setStorageSync('prePage', getCurrentPages()[getCurrentPages().length - 1].$page.fullPath)  
+						base.handleGoto({url: '/pages/login/login', type: 'redirectTo'})
+					}
 					console.log('刷新token成功，执行队列')
 					requests.forEach(cb => cb(userid))
 					// 执行完成后，清空队列
