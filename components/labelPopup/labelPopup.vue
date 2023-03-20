@@ -10,7 +10,7 @@
 			 @open="open"
 			 round="10" >
 			 <view class="u-p-30">
-				<view class="u-text-center text-base u-p-20 u-m-b-20">{{props.origin.name}}的标签管理</view>
+				<view class="u-text-center text-base u-p-20 u-m-b-20">{{props.origin.a1}}的标签管理</view>
 				
 				<view class="u-flex u-flex-items-center u-m-b-20">
 					<view class="u-flex-1">
@@ -33,13 +33,13 @@
 				<view class="tags-w u-flex u-flex-items-start u-flex-wrap u-font-28 u-m-b-40"> 
 					<view class="u-m-r-10 u-m-b-10"
 						v-for="(item, index) in props.origin.tags"
-						:key="index"
+						:key="item.id"
 					>
 						<u-tag 
 							closable
-							:name="index" 
+							:name="item.id" 
 							size="mini" 
-							:text="item"  
+							:text="item.info"  
 							type="primary" 
 							plain 
 							plainFill 
@@ -103,14 +103,15 @@
 		console.log(props.origin)
 	}
 	function close() {
+		newtag.value = ''
 		emits('popclose')
 	}
 	function deletTagsClick(e) {
 		console.log(e)
-		emits('delTag', {data: props.origin.tags[e]})
+		emits('delTag', {data: props.origin, tagId: e})
 	}
 	function addTagsClick() { 
-		emits('addTag', {data: newtag.value})
+		emits('addTag', {data: props.origin, tag: newtag.value})
 		
 	}
 	

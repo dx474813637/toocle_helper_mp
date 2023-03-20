@@ -22,6 +22,12 @@
 		{
 			"path": "pages/index/index",
 			"style": {
+				"enablePullDownRefresh": false
+			}
+		
+		}, {
+			"path": "pages/index/home",
+			"style": {
 				"navigationBarTextStyle": "white",
 				"navigationBarBackgroundColor": "#4aa3ff",
 				"backgroundColor": "#4aa3ff",
@@ -29,29 +35,30 @@
 			}
 		}, {
 			"path": "pages/todolist/todolist",
-			"style": { 
+			"style": {
 				"enablePullDownRefresh": false,
 				"onReachBottomDistance": 80
 			}
 
 		}, {
 			"path": "pages/history/history",
-			"style": { 
+			"style": {
 				"enablePullDownRefresh": false,
 				"onReachBottomDistance": 80
 			}
 
 		}, {
 			"path": "pages/user/user",
-			"style": { 
+			"style": {
 				"enablePullDownRefresh": false,
 				"navigationStyle": "custom"
 			}
 
 		}, {
-			"path": "pages/login/login",
-			"style": { 
-				"enablePullDownRefresh": false
+			"path": "pages/user/info",
+			"style": {
+				"enablePullDownRefresh": false,
+				"navigationBarTitleText": "我的信息"
 			}
 
 		}, {
@@ -62,38 +69,57 @@
 				"onReachBottomDistance": 80
 			}
 
+		}, {
+			"path": "pages/cpy/cpy",
+			"style": {
+				"enablePullDownRefresh": false
+			}
+
+		}, {
+			"path": "pages/customer/customer",
+			"style": {
+				"enablePullDownRefresh": false,
+				"navigationBarTitleText": "",
+				"navigationBarTextStyle": "white",
+				"navigationBarBackgroundColor": "#4aa3ff",
+				"backgroundColor": "#4aa3ff"
+			}
+
+		}, {
+			"path": "pages/customer/customerlist",
+			"style": {
+				"navigationBarTitleText": "列表",
+				"enablePullDownRefresh": false,
+				"onReachBottomDistance": 80
+			}
+
+		}, {
+			"path": "pages/customer/addevent",
+			"style": {
+				"navigationBarTitleText": "添加跟进记录",
+				"enablePullDownRefresh": false
+			}
+
+		}, {
+			"path": "pages/cpy/cpy_edit",
+			"style": {
+				"navigationBarTitleText": "",
+				"enablePullDownRefresh": false
+			}
+
+		}, {
+			"path": "pages/user/setting",
+			"style": {
+				"navigationBarTitleText": "通用",
+				"enablePullDownRefresh": false
+			}
+
 		}
 	    ,{
-            "path" : "pages/cpy/cpy",
-            "style" :                                                                                    
-            { 
-                "enablePullDownRefresh": false
-            }
-            
-        }
-        ,{
-            "path" : "pages/customer/customer",
-            "style" :                                                                                    
-            {  
-                "enablePullDownRefresh": false
-            }
-            
-        }
-        ,{
-            "path" : "pages/customer/customerlist",
-            "style" :                                                                                    
-            { 
-                "navigationBarTitleText": "列表",
-                "enablePullDownRefresh": false,
-				"onReachBottomDistance": 80
-            }
-            
-        }
-        ,{
-            "path" : "pages/customer/addevent",
+            "path" : "pages/about/about",
             "style" :                                                                                    
             {
-                "navigationBarTitleText": "添加跟进记录",
+                "navigationBarTitleText": "",
                 "enablePullDownRefresh": false
             }
             

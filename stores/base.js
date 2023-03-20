@@ -41,7 +41,7 @@ export const menusStore = defineStore('menus', {
 			new_memu: [],
 			news: 0,
 			currPage: {
-				route: '',
+				route: '/pages/index/index',
 				options: {}
 			},
 			cpy_type_origin: [[]],

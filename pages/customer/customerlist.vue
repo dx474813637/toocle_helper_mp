@@ -43,6 +43,7 @@
 				@detail="handledetail"
 				@labelManger="labelManger"
 				@addEventBtn="addEventBtn"
+				@updateBtn="updateBtn"
 			></customerListCard>
 		</view>
 		<template v-if="cpy_list.length == 0">
@@ -103,6 +104,20 @@
 	const loadstatus = ref('loadmore') 
 	onLoad(async (options) => { 
 		init()
+		uni.$on('update',function(data){
+			console.log('监听到事件来自 update ，携带参数：' , data);
+			const type = data.type;
+			const update_id = data.id;
+			const update_data = data.data;
+			let index = cpy_list.value.findIndex(ele => ele.id == update_id);
+			if(type == 'info') {
+				let updated_data = {...cpy_list.value[index], ...update_data}
+				cpy_list.value.splice(index, 1, updated_data)
+			}
+			else if(type == 'event') { 
+				cpy_list.value[index].follow_up.unshift(update_data)
+			}
+		})
 	})
 	onReachBottom( () => {
 		getMoreData()
@@ -130,7 +145,6 @@
 		const res = await $api.company_list_login({ params })
 		if(res.code == 1) {
 			cpy_list.value = [
-				{tags: ['标签1','标签2231','标签1','标签2231','标签3','标签A','标签V','标签DSA']},
 				...cpy_list.value, 
 				...res.list.map(ele => {
 					ele.joinstatus = 'error'
@@ -153,23 +167,37 @@
 		await getData()
 	}
 	function takePhoneBtn({data}) {
-		const {a12} = data;
-		uni.makePhoneCall({
-			phoneNumber: `${a12}`,
-			async success(e) {
-				console.log(e)
-				const res = await $api.join_call({
-					params: {
-						cate: 2,
-						id: data.id
-					}
-				})
-			},
-			fail(e) {
-				console.log(e)
-			}, 
-		});
-	} 
+		const {tel} = data;
+		const arr = tel.split(',')
+		if(arr.length > 0) {
+			uni.showActionSheet({
+				itemList: arr,
+				success: function (res) {
+					console.log(arr[res.tapIndex]);
+					uni.makePhoneCall({
+						phoneNumber: `${arr[res.tapIndex]}`,
+						async success(e) {
+							console.log(e)
+							const r = await $api.join_call({
+								params: {
+									cate: 1,
+									id: data.id
+								}
+							})
+						},
+						fail(e) {
+							console.log(e)
+						}, 
+					});
+				},
+				fail: function (res) {
+					console.log(res.errMsg);
+				}
+			});
+		}
+		
+		
+	}
 	async function join2Btn({data}) {
 		const {id} = data;
 		let index = cpy_list.value.findIndex(ele => ele.id == id)
@@ -188,16 +216,49 @@
 		base.handleGoto({
 			url: '/pages/customer/customer',
 			params: {
-				cid: data.id, 
+				id: data.id, 
 			}
 		})
 	}
 	
-	async function addTag({data}) {
+	async function addTag({data, tag}) {
 		// mangerData.push('新增标签11')
+		let index = cpy_list.value.findIndex(ele => ele.id == data.id);
+		if(index == -1) return
+		uni.showLoading()
+		const res = await $api.add_company_tag({
+			params: {
+				id: data.id,
+				cate: '2',
+				info: tag,
+			}
+		})
+		if(res.code == 1) {
+			uni.showToast({
+				title: res.msg,
+				icon: 'none'
+			})
+			cpy_list.value[index].tags.unshift(res.list)
+		}
 	}
-	async function delTag({tag, index}) {
-		
+	async function delTag({ data, tagId }) {
+		console.log(data.id, tagId)
+		let tagIndex = mangerData.value.tags.findIndex(ele => ele.id == tagId);
+		let index = cpy_list.value.findIndex(ele => ele.id == data.id);
+		if(tagIndex == -1) return
+		uni.showLoading()
+		const res = await $api.del_tags({
+			params: {
+				id: tagId,
+			}
+		})
+		if(res.code == 1) {
+			uni.showToast({
+				title: res.msg,
+				icon: 'none'
+			})
+			cpy_list.value[index].tags.splice(tagIndex, 1)
+		}
 	}
 	function popclose( ) { 
 		mangerShow.value = false
@@ -216,8 +277,22 @@
 			}
 		})
 	}
+	function updateBtn({data}) {
+		base.handleGoto({
+			url: '/pages/cpy/cpy_edit', 
+			params: {
+				id: data.id, 
+				ctype: '2',
+			},
+		})
+	}
 </script>
-
+<style>
+	page {
+		background-color: #f8f8f8;
+		min-height: 100vh;
+	}
+</style>
 <style lang="scss" scoped>
 	.w { 
 		padding-bottom: 60px;

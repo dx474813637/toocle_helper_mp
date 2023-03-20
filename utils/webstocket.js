@@ -43,7 +43,7 @@ function init() {
 		
 		
 		send('{"type":"login","client_name":"'+login+'","room_id":"zhushou_xcx","token":"'+token+'","login":"'+login+'"}')
-		if(getCurrentPages() && getCurrentPages()[0]) send('{"type":"xcx","client_name":"'+login+'","rawmex_login":"'+login2+'","room_id":"zhushou_xcx","token":"'+token+'","login":"'+login+'","content":"'+getCurrentPages()[0].$page.fullPath+'"}')
+		// if(getCurrentPages() && getCurrentPages()[0]) send('{"type":"xcx","client_name":"'+login+'","rawmex_login":"'+login2+'","room_id":"zhushou_xcx","token":"'+token+'","login":"'+login+'","content":"'+getCurrentPages()[0].$page.fullPath+'"}')
 		
         clearInterval(heartBeatInterval)
         clearInterval(reconnectInterval)

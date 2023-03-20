@@ -56,12 +56,12 @@
 			base.saveShareInfo(options.query.share_other) 
 		} 
 		if(uni.getStorageSync('WebSocketInfo')) $ws.init()
-		
-		if(user.user.login == 0) { 
-			uni.redirectTo({
-				url: '/pages/login/login'
-			})
-		}
+		console.log(user.user.login)
+		// if(user.user.login == 0) { 
+		// 	uni.redirectTo({
+		// 		url: '/pages/index/index'
+		// 	})
+		// }
 	});
 	onHide((options) => {
 		// console.log('App Hide')

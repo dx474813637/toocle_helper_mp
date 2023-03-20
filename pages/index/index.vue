@@ -1,166 +1,73 @@
 <template>
-	<view class="w">
-		<image 
-			class="header-banner" 
-			src="https://wx.rawmex.cn/Public/zhushou/zs3.png" 
-			mode="widthFix"
-		></image>
-		<u-sticky zIndex="50" >
-			<view class="u-p-l-30 u-p-r-30 u-p-b-10  " :style="{background: base.themeColor}">
-				<view class="u-radius-6 bg-white u-flex u-flex-items-center" style="height: 45px;">
-					<view class="search-icon u-p-l-10">
-						<u-icon name="search" size="26"></u-icon>
-					</view>
-					<view class="search-left u-flex u-flex-items-center u-flex-center" @click="search_type_show = true"> 
-						<u--input 
-							suffixIcon="arrow-down" 
-							readonly
-							v-model="search_type_text"
-							suffixIconStyle="font-size: 16px"
-							border="none"
-						></u--input>
-					</view>
-					<view class="u-flex-1">
-						<template v-if="search_type_key == 'type'">
-							<view class="u-p-l-30 u-p-r-30" @click="type_show = true" >
-								<u--input
-									suffixIcon="arrow-down" 
-									readonly
-									placeholder="请下拉选择类型" 
-									v-model="type_text"
-									suffixIconStyle="font-size: 16px"
-									border="none"
-								></u--input>
-							</view>
-						</template>
-						<template v-else>
-							<u-search
-								searchIcon=""
-								placeholder="输入搜索关键字" 
-								v-model="keyword" 
-								shape="square"
-								:showAction="false"
-								bgColor="#fff" 
-								searchIconColor="#6f6f6f"
-								searchIconSize="32" 
-								@search="handleSearch"
-							></u-search> 
-						</template>
-						
-					</view>
-				</view>
-				
-			</view>
-		</u-sticky>
-		<u-picker 
-			title="选择搜索类型"
-			:show="search_type_show" 
-			:columns="search_type_list"
-			closeOnClickOverlay
-			keyName="name"
-			@close="search_type_show = false"
-			@cancel="search_type_show = false"
-			@confirm="search_type_confirm"
-		></u-picker>
-		<u-picker 
-			title="选择类型"
-			:show="type_show" 
-			:columns="menus.cpy_type_origin"
-			closeOnClickOverlay 
-			@close="type_show = false"
-			@cancel="type_show = false"
-			@confirm="type_confirm"
-		></u-picker>
-		<view class="u-m-t-40" v-if="search_list.length > 0">
-			<view class="u-p-l-30 u-flex u-flex-items-center text-white">
-				<i class="custom-icon-scoretop custom-icon text-white u-font-38"></i>
-				<view class="u-p-l-12">同事都在搜</view>
-			</view>
-			<view class="u-m-t-20 u-m-b-20 u-m-l-25">
-				<u-tabs 
-					lineWidth="0"
-					lineHeight="0"
-					:list="search_list" 
-					@click="tabsClick"
-					keyName="terms"
-					activeStyle="color: #fff;font-size: 12px"
-					inactiveStyle="color: #fff;font-size: 12px"
-					:itemStyle="{
-						background: 'rgba(255,255,255, .2)', 
-						borderRadius: '13px',
-						padding: '0 12px',
-						lineHeight: '25px',
-						height: '25px',
-						marginRight: '15rpx',
-						fontSize: '12px',
-						minWidth: '4em'
-					}"
-				></u-tabs>
-			</view>
-		</view>
-		<view class=" bg-white u-m-t-40 u-p-t-30 u-p-b-20 list u-radius-15">
-			<u-sticky zIndex="50" offsetTop="50">
-				<view class="bg-white" >
-					<u-tabs
-						:current="tabs_current"
-						:list="cpy_tabs_list" 
-						:activeStyle="{
-							color: base.themeColor,
-							fontSize: '16px',
-							fontWeight: 'bold'
-						}"
-						:lineColor="baseStore.themeColor"
-						@click="cpytabsClick"
-						keyName="name" 
-					></u-tabs>
-				</view>
-				
-			</u-sticky>
-			<view 
-				class="list-item u-m-t-20 u-p-l-20 u-p-r-20"
-				v-for="item in cpy_list"
-				:key="item.id"
+	<view class="wrap" v-if="hide != 1">
+		<!-- <view class="top"></view> -->
+		<view class="content">
+			<view class="title">欢迎登录</view>
+			<u--form 
+				labelPosition="top"
+				:model="form" 
+				ref="uForm" 
 			>
-				<cpyListCard 
-					:origin="item"
-					:btns="{
-						edit: 1,
-						call: 1,
-						add: 1,
-						remove: 0,
-						join_customer: 0
-					}"
-					@takePhoneBtn="takePhoneBtn"
-					@joinBtn="joinBtn"
-					@detail="handledetail"
-				></cpyListCard>
-			</view>
-			<template v-if="cpy_list.length == 0">
-				<u-empty
-					mode="data"
-					:icon="base.empty"
-				>
-				</u-empty>
-			</template>
-			<template v-else>
-				<u-loadmore
-					:status="loadstatus"
-				/>
-			</template>
-			<u-safe-bottom></u-safe-bottom>
-		</view>
-		
-		<menusBar ></menusBar>
+				<u-form-item prop="login" >
+					<u--input 
+						v-model="form.login" 
+						prefixIcon="account-fill"
+						clearable
+						prefixIconStyle="color: #999"
+						:placeholder="`请输入${logintype == 1? '手机' :'账号/手机'}`" 
+					/>
+				</u-form-item>
+
+				<template v-if="logintype == 2">
+					<u-form-item prop="passwd" >
+						<u-input 
+							:password="passwordType"
+							prefixIcon="lock-fill"
+							clearable
+							prefixIconStyle="color: #999"
+							v-model="form.passwd" 
+							placeholder="请输入密码"
+						>
+							<template slot="suffix">
+								<u-icon 
+									@click="passwordType = !passwordType"
+									:name=" passwordType ? 'eye-off' : 'eye-fill'"
+									:color=" passwordType ? '#ccc' : '#007aff'"
+									></u-icon>	
+							</template>
+						</u-input>
+					</u-form-item>
+				</template>
+			</u--form>
+			<u-button type="primary" :ripple="true" @click="submit" :custom-style="inputStyle">
+				{{ logintype == 2 ? '登录' : '获取短信验证码'}}</u-button>
+
+			<!-- 
+			<view class="alternative">
+				<view class="password" @click="changeLoginType">{{ logintype == 1 ? '账号密码登录' : '手机验证码登录'}}</view>
+				<view class="issue" @click="handleGoto({url:'/pages/index/login/register'})">注册账号</view>
+			</view> 
+			
+			<view class=" u-m-t-40 u-flex u-flex-end">
+				<view>
+					<u--text type="warning" decoration="underline" text="忘记密码？" @click="handleGoto('/pages/index/login/resetPwd')"></u--text>
+				</view>
+				
+				
+			</view> -->
+		</view> 
+		<!-- <view class="u-p-l-10 u-p-r-10">
+			<u-parse :content="denglu_info[logintype == 1? 'info1' : 'info2']"></u-parse>
+		</view> -->
 	</view>
 </template>
 
 <script setup>
 	import {
 		onLoad,
-		onShow,
+		onReady, 
 		onShareTimeline,
 		onShareAppMessage,
-		onReachBottom,
 	} from "@dcloudio/uni-app";
 	import {
 		ref,
@@ -168,207 +75,242 @@
 		computed
 	} from 'vue'
 	import {share} from '@/composition/share.js'
-	import { inject } from 'vue' 
-	// import menusBar from '@/components/menusBar/menusBa	r.vue'
+	import { inject } from 'vue'  
 	import {
 		baseStore,
 		menusStore
 	} from '@/stores/base';
-	const base = baseStore()
-	const menus = menusStore()
-	const keyword = ref('')
-	const tabs_current = ref(0)
-	const loadstatus = ref('loadmore')
-	const curP = ref(1)
-	const $api = inject('$api');
-	const search_list = ref([])
-	const cpy_list = ref([])
-	// 搜索类型 配置
-	const search_type_show = ref(false)
-	const search_type_current = ref(0)
-	const search_type_key = computed(() => search_type_list.value[0][search_type_current.value].key)
-	const search_type_text = computed(() => search_type_list.value[0][search_type_current.value].name)
-	const search_type_list = ref([
-		[
-			{
-				name: '客户',
-				key: 'terms'
-			},
-			{
-				name: '类别',
-				key: 'type'
-			},
-			{
-				name: '地区',
-				key: 'area'
-			},
-		]
-	])
-	//企业类别picker 配置
-	const type_show = ref(false)
-	const type_current = ref(-1) 
-	const type_text = computed(() => type_current.value == -1 ? '' : menus.cpy_type_origin[0][type_current.value])
-	 
-	const cpy_tabs_list = ref([
-		{
-			name: '最近更新',
-			apiFunc: 'company_list',
-			disabled: false
-		},
-		{
-			name: '最新完善',
-			apiFunc: 'company_lista',
-			disabled: false
-		}
-	])
-	const list_api = computed(() => cpy_tabs_list.value[tabs_current.value].apiFunc)
 	share()
-	onLoad(async (option) => { 
-		uni.showLoading()
-		await getHome()
-		await refreshList()
-	}); 
-	onReachBottom( () => {
-		getMoreData()
+	import {
+		userStore
+	} from '@/stores/user';
+	const user = userStore()
+	const logintype = ref(2)
+	const form = reactive({
+		login: '',
+		passwd: ''
 	})
-	
-	function handleSearch() {
-		base.handleGoto({
-			url: '/pages/search/search',
-			params: {
-				[`${search_type_key.value}`]: keyword.value
-			}
-		})
-	}
-	
-	function search_type_confirm(e) { 
-		search_type_current.value = e.indexs[0]
-		search_type_show.value = false
-	}
-	function type_confirm(e) {  
-		type_current.value = e.indexs[0]
-		type_show.value = false
-		base.handleGoto({
-			url: '/pages/search/search',
-			params: {
-				[`${search_type_key.value}`]: e.value[0]
-			}
-		})
-	}
-	function initParamas() {
-		curP.value = 1;
-		cpy_list.value = [];
-		loadstatus.value = 'loadmore'
-	}
-	async function refreshList() {
-		initParamas()
-		uni.showLoading() 
-		await getHomeList()
-	}
-	async function getMoreData() {
-		if(loadstatus.value != 'loadmore') return
-		curP.value ++
-		await getHomeList()
-	}
-	async function getHome() {
-		const res = await $api.home() ;
-		if(res.code == 1) {
-			search_list.value = res.list
-		}
-	}
-	async function getHomeList() {
-		if(loadstatus.value == 'loading') return
-		loadstatus.value = 'loading'
-		const res = await $api[list_api.value]({params: {p: curP.value}}) ;
-		if(res.code == 1) {
-			cpy_list.value = [...cpy_list.value, ...res.list.map(ele => {
-				ele.joinstatus = 'error'
-				return {...ele}
-			})]
-			if( curP.value == res.pages ) {
-				loadstatus.value = 'nomore'
-			}else {
-				loadstatus.value = 'loadmore'
+	const denglu_info = reactive({})
+	const passwordType = ref(true)
+	const inputStyle = reactive({
+		'borderRadius': '10rpx', 
+		'backgroundColor': '#007aff',
+		'marginTop': '40rpx'
+	})
+	const $api = inject('$api')
+	const uForm = ref()
+	const rules = computed(() => {
+		if(logintype.value == 2) {
+			return {
+				login: [{
+					required: true,
+					message: '请输入账号/手机号',
+					trigger: ['blur', 'change']
+				}, ],
+				passwd: [{
+					required: true,
+					message: '请输入密码',
+					trigger: ['blur', 'change']
+				}, ],
 			}
 		}
-	}
-	function tabsClick(data) {
-		base.handleGoto({
-			url: '/pages/search/search',
-			params: {
-				[`${data.key}`]: data.terms
+		else if(logintype.value == 1) {
+			return {
+				login: [{
+						required: true,
+						message: '请输入手机号',
+						trigger: ['blur', 'change']
+					},
+					{
+						validator: (rule, value, callback) => {
+							console.log(uni.$u.test.mobile(value))
+							return uni.$u.test.mobile(value)
+						},
+						message: '请输入正确的11位手机号',
+						trigger: ['blur', 'change']
+					},
+				],
 			}
-		})
-	}
-	function cpytabsClick(data) {
-		console.log(data)
-		tabs_current.value = data.index
-		uni.showLoading()
-		refreshList()
-	}
-	function takePhoneBtn({data}) {
-		const {a12} = data;
-		uni.makePhoneCall({
-			phoneNumber: `${a12}`,
-			async success(e) {
-				console.log(e)
-				const res = await $api.join_call({
-					params: {
-						cate: 1,
-						id: data.id
-					}
-				})
-			},
-			fail(e) {
-				console.log(e)
-			}, 
-		});
-	}
-	async function joinBtn({data}) {
-		const {id} = data;
-		let index = cpy_list.value.findIndex(ele => ele.id == id)
-		if(cpy_list.value[index].joinstatus == 'loading') return
-		cpy_list.value[index].joinstatus = 'loading'
-		const res = await $api.join_qingdan({params: {id}})
-		if(res.code == 1) { 
-			cpy_list.value[index].joinstatus = 'success'
+		}
+		return {}
+	})
+	const hide = ref(1)
+	onLoad(async () => {
+		const res = await user.getUserInfo()
+		if(res.code == 1) {
+			uni.reLaunch({
+				url: '/pages/index/home'
+			})
 		}else {
-			cpy_list.value[index].joinstatus = 'done'
+			hide.value = 0
 		}
+	})
+	onReady(() => {
+		handleSetRules()
+	})
+	function submit() { 
+		console.log(uForm.value)
+		getLogin()
+		// uForm.value.validate().then(valid => {
+		// 	if (valid) {
+		// 		// console.log('验证通过');
+		// 		if (logintype.value == 1) {
+		// 			// getCode()
+		// 		} else {
+		// 			getLogin()
+		// 		}
+		// 	} else {
+		// 		// console.log('验证失败');
+		// 	}
+		// }).catch(errors => {
+		// 	uni.$u.toast('校验失败')
+		// });
 	}
-	
-	function handledetail({data}) {
-		base.handleGoto({
-			url: '/pages/cpy/cpy',
-			params: {
-				cid: data.id,
-				ctype: '1'
-			}
+	function getCode() {
+		uni.navigateTo({
+			url: `/pages/index/login/code?login=${form.login}`
 		})
 	}
+	async function exit() { 
+		let res = await $api.logout() 
+	}
+	async function getLogin() {
+		uni.showLoading({
+			title: '登录信息验证中...'
+		})
+		// await uni.$u.sleep(1800)
+		let res = await $api.zhushou_login({
+			params: form
+		})
+		if(res.code == 1) {  
+			// uni.setStorageSync('userid', '')
+			// naviBack()
+			 uni.reLaunch({
+				 url: '/pages/index/home'
+			 })
+		}
+		
+	}
+	function naviBack() { 
+		let url = uni.getStorageSync('prePage')
+		console.log(url)
+		uni.redirectTo({
+			url:'/pages/index/home',
+			success() {
+				uni.showToast({
+					title: '登录成功',
+					icon: 'none'
+				})
+			}
+		})
+		uni.removeStorageSync('prePage') 
+	}
+	function handleSetRules() { 
+		// uForm.value.setRules(rules.value)
+	}
+	function changeLoginType() {
+		logintype.value == 1 ? logintype.value = 2 : logintype.value = 1
+		// $set(form, "login", "")
+		form.login = ''
+		uForm.value.clearValidate()
+		handleSetRules()
+	}
+	
 </script>
 
-<style lang="scss">
-	page {
-		min-height: 100vh;
-		// background: linear-gradient(to bottom, #4aa3ff, #6bb3ff);
-		background: #4aa3ff;
-	}
-</style>
 <style lang="scss" scoped>
-	.w { 
-		padding-bottom: 60px;
+	.u-border-bottom {
+		border-bottom: 1rpx solid #e7e7e7;
 	}
-	.header-banner {
-		width: 100vw;
+
+	.login-box {
+		display: none;
+
+		&.tel,
+		&.pw {
+			display: block;
+		}
 	}
-	.list {
-		min-height: 70vh;
-		border-radius: 20px;
+
+	.inputRow {
+		margin-bottom: 30rpx;
 	}
-	.search-left {
-		flex: 0 0 60px;
-		padding: 0 8px; 
-		border-right: 1rpx solid #eee;
+
+	.wrap {
+		font-size: 28rpx;
+
+		.content {
+			width: 600rpx;
+			margin: 20rpx auto 0;
+
+			.title {
+				text-align: left;
+				font-size: 50rpx;
+				font-weight: 500;
+				margin-bottom: 50rpx;
+			}
+
+			input {
+				text-align: left;
+				margin-bottom: 10rpx;
+				padding-bottom: 6rpx;
+			}
+
+			.tips {
+				color: #ffaa00;
+				margin-bottom: 60rpx;
+				margin-top: 8rpx;
+			}
+
+			.getCaptcha {
+				background-color: rgb(253, 243, 208);
+				color: $uni-color-warning;
+				border: none;
+				font-size: 30rpx;
+				padding: 12rpx 0;
+
+				&::after {
+					border: none;
+				}
+			}
+
+			.alternative {
+				color: #666;
+				display: flex;
+				justify-content: space-between;
+				margin-top: 30rpx;
+			}
+		}
+
+		.buttom {
+			position: fixed;
+			left: 0;
+			bottom: 0;
+			width: 100%;
+
+			.loginType {
+				display: flex;
+				padding: 350rpx 150rpx 150rpx 150rpx;
+				justify-content: space-between;
+
+				.item {
+					display: flex;
+					flex-direction: column;
+					align-items: center;
+					color: #666;
+					font-size: 28rpx;
+				}
+			}
+
+			.hint {
+				// padding: 20rpx 40rpx;
+				font-size: 28rpx;
+				color: #333;
+
+				.link {
+					color: #007aff;
+				}
+			}
+		}
 	}
 </style>

@@ -34,7 +34,7 @@
 				<u-line width="100%" margin="20px 0 0 0"></u-line>
 				<u-form-item prop="riqi" label="跟进提醒" labelWidth="80px" required>
 					<view class="u-flex u-flex-items-center u-flex-between u-font-28" @click="dateshow = true">
-						<view class="text-primary" v-if="form.riqi">{{$u.timeFormat(form.riqi, 'yyyy年mm月dd日')}}</view>
+						<view class="text-primary" v-if="form.riqi">{{$u.timeFormat(form.riqi, 'yyyy-mm-dd hh:MM')}}</view>
 						<view class="text-light" v-else>选择下次跟进时间</view>
 						<u-icon name="arrow-right" color="#bbb"></u-icon>
 					</view>
@@ -45,7 +45,7 @@
 			:show="dateshow"
 			:minDate="new Date().getTime()"
 			v-model="form.riqi"
-			mode="date"
+			mode="datetime"
 			closeOnClickOverlay
 			@confirm="confirmDate"
 			@cancel="dateshow = false"
@@ -168,17 +168,20 @@
 		uForm.value.validate().then(async res => { 
 			const list = await $api.add_company_tag({
 				params: {
-					...form, 
+					...form,
+					riqi: uni.$u.timeFormat(form.riqi, 'yyyy-mm-dd hh:MM'),
+					id: id.value,
 					img: fileList1.value.map(ele => ele.url).join(','),
 				}
 			})
 			if(list.code == 1) { 
 				form.info = ''
 				fileList1.value = []
+				uni.$emit('update',{ type: 'event', data: {...list.list, uptime: uni.$u.timeFormat(new Date().getTime(), 'yyyy-mm-dd hh:MM:ss')}, id: id.value })
 				uni.showToast({
 					title: list.msg
 				})
-				setTimeout(() => {
+				setTimeout(() => { 
 					uni.navigateBack()
 				}, 2000)
 			}

@@ -45,9 +45,9 @@ export function permissionBase(e, $ws) {
 	 	const url = e.url.split('?')[0]
 	 	console.log('url:addInterceptor ===> ', e.url) 
 	 	const r = uni.getStorageSync('WebSocketInfo')
-	 	$ws.send('{"type":"xcx","client_name":"' + r.w_login + '","rawmex_login":"' +
-	 		r.login + '","room_id":"zhushou_xcx","token":"' + r.w_token +
-	 		'","login":"' + r.w_login + '","content":"' + e.url + '"}')
+	 	// $ws.send('{"type":"xcx","client_name":"' + r.w_login + '","rawmex_login":"' +
+	 	// 	r.login + '","room_id":"zhushou_xcx","token":"' + r.w_token +
+	 	// 	'","login":"' + r.w_login + '","content":"' + e.url + '"}')
 	 		
 	 	// 判断当前窗口是白名单，如果是则不重定向路由
 	 	let pass 
@@ -64,7 +64,7 @@ export function permissionBase(e, $ws) {
 	 	
 	 		uni.setStorageSync('prePage', e.url)
 			
-			base.handleGoto({url: '/pages/login/login', type: 'redirectTo'}) 
+			base.handleGoto({url: '/pages/index/index', type: 'redirectTo'}) 
 	 		return false
 	 	}
 	 	
@@ -122,7 +122,7 @@ export function permissionBase(e, $ws) {
  
 export default async function($ws) {
 	// console.log($ws)   
-	const list = ['navigateTo', 'redirectTo', 'reLaunch', 'switchTab']
+	const list = ['navigateTo', 'redirectTo', 'reLaunch', 'switchTab'] 
 	// 用遍历的方式分别为,uni.navigateTo,uni.redirectTo,uni.reLaunch,uni.switchTab这4个路由方法添加拦截器
 	list.forEach(item => {
 		uni.addInterceptor(item, {

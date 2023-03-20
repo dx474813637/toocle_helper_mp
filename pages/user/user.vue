@@ -7,7 +7,7 @@
 		>
 			<template #left>
 				<view class="u-flex u-flex-items-center" >
-					<view @click="base.handleGoto('/pages/user/settings')" class="step1 item u-p-10">
+					<view @click="base.handleGoto('/pages/user/setting')" class="step1 item u-p-10">
 						<i class="custom-icon-shezhi1 custom-icon u-font-38"></i>
 					</view>
 					<view @click="base.handleGoto('/pages/msg/msg')" class="step2 item u-p-10" style="position: relative;">
@@ -20,16 +20,16 @@
 		</u-navbar>
 		<view class="step3 user u-flex u-flex-items-start u-p-20 u-p-t-50 u-m-b-26">
 			
-			<view class="user-img u-flex u-flex-items-center u-flex-center" @click="base.handleGoto('/pages/my/user/info')">
+			<view class="user-img u-flex u-flex-items-center u-flex-center" @click="base.handleGoto('/pages/user/info')">
 				<i class="custom-icon-myfill custom-icon"></i>
 			</view>
-			<view class="user-info u-flex-1" @click="base.handleGoto('/pages/my/user/info')">
-				<!-- <template v-if="loading">
+			<view class="user-info u-flex-1" @click="base.handleGoto('/pages/user/info')">
+				<template v-if="user.user_loading">
 					<u-loading-icon></u-loading-icon>
-				</template> -->
+				</template>
 				<template v-if="user.user.login != 0">
 					<view class="item u-flex u-flex-items-center"> 
-						<view class="name u-line-1 u-font-38 step7">{{user.user.login}}</view>
+						<view class="name u-line-1 u-font-38 step7">{{user.user_info.name || user.user.login}}</view>
 						<!-- <view v-if="myCpy.type" class="step8 sub text-white u-font-24 u-flex u-flex-items-center u-p-4 u-p-l-10 u-p-r-16 u-m-l-20">
 							<text >{{myCpy.type | type2str}}</text> 
 						</view>
@@ -44,13 +44,13 @@
 							<text>{{myCpy.state | myCpyAuth2str}}</text>
 						</view> -->
 					</view>
-					<!-- <view class="item">
+					<view class="item">
 						<view class="sub2 u-font-28 step9 text-light u-flex u-flex-items-center">
-							<text v-if="myCpy.name">{{myCpy.name}}</text>
+							<text v-if="user.user_info.phone">{{user.user_info.phone}}</text>
 							<text v-else>点击完善用户信息</text>
 							<i class="custom-icon-edit custom-icon u-font-28 text-light u-m-l-10"></i>
 						</view>
-					</view> -->
+					</view>
 				</template>
 				<template v-else>
 					<view class="item u-flex u-flex-items-center">
@@ -74,7 +74,7 @@
 		
 		<!-- 客户管理 远程控制 --> 
 		<view class="user-item-box u-p-24 bg-white u-m-b-26 step5" v-if="menus.menus_wd_broker.hasOwnProperty('list') && menus.menus_wd_broker.list.length > 0">
-			<view @click="base.handleGoto('/pages/my/customer/customer')" class="u-flex u-flex-items-center u-p-t-6 u-p-b-30  u-border-bottom" style="border-color: #dadbde!important;">
+			<view class="u-flex u-flex-items-center u-p-t-6 u-p-b-30  u-border-bottom" style="border-color: #dadbde!important;">
 				<image style="width: 35px;height: 35px;" :src="menus.menus_wd_broker.icon" mode="scaleToFill"></image>
 				<view class="item u-p-l-20">
 					<view class="u-font-36">{{menus.menus_wd_broker.name}}</view>
@@ -177,6 +177,9 @@
 	const menus = menusStore()
 	const user = userStore()
 	
+	onLoad(async () => {
+		await user.getUserInfo()
+	})
 	
 	function handleMenusClick(item) {
 		console.log(item)

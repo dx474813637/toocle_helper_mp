@@ -1,6 +1,6 @@
 <template>
 	<view class="w">
-		<view class="header u-flex u-flex-items-center u-flex-between u-p-l-20 u-p-r-20">
+		<view class="header u-flex bg-white u-flex-items-center u-flex-between u-p-l-20 u-p-r-20">
 			<image 
 				class="header-banner" 
 				src="https://wx.rawmex.cn/Public/zhushou/zs1.png" 
@@ -15,30 +15,41 @@
 					icon="plus-circle"
 					text="我要新加" 
 					borderColor="transparent"
+					@click="base.handleGoto('/pages/cpy/cpy_edit')"
 				></u-tag>
 			</view>
 		</view>
 		<u-sticky zIndex="50" bgColor="#fff">
-			<view class="header-sticky u-flex u-flex-items-center u-flex-between u-p-l-20 u-p-r-20"> 
-				<view class="item u-flex u-flex-items-center">
-					<u-icon name="order" color="#f90" size="20" ></u-icon>
-					<view class="text-primary u-font-32 u-m-l-15">我的拨打清单</view>
-				</view>
-				<view class="item u-flex u-flex-items-center">
-					<u-tag
-						type="error" 
-						plain 
-						plainFill
-						size="mini"
-						icon="trash"
-						text="一键清空" 
-						borderColor="transparent"
-						@click="clearAllBtn"
-					></u-tag>
-					<!-- <u-icon name="trash" color="#ff0000" size="14" ></u-icon>
-					<view class="text-error u-font-26 u-m-l-15">一键清空</view> -->
-				</view>
-			</view>
+			<view class="header-sticky "> 
+				<view class="u-flex u-flex-items-center u-flex-between u-p-l-20 u-p-r-20">
+					<view class="item u-flex u-flex-items-center">
+						<u-icon name="order" color="#f90" size="20" ></u-icon>
+						<view class="text-primary u-font-32 u-m-l-15">我的备打清单</view>
+					</view>
+					<view class="item u-flex u-flex-items-center">
+						<u-tag
+							type="error" 
+							plain 
+							plainFill
+							size="mini"
+							icon="trash"
+							text="一键清空" 
+							borderColor="transparent"
+							@click="clearAllBtn"
+						></u-tag> 
+					</view>
+				</view> 
+				<view class="search-w u-p-20 bg-white">
+					<u-search 
+						placeholder="输入搜索关键字" 
+						v-model="params.terms" 
+						shape="square"
+						:showAction="false"
+						bgColor="#f8f8f8"  
+						@search="handleSearch"
+					></u-search>
+				</view> 
+			</view> 
 		</u-sticky> 
 		<view
 			class="list-item u-m-t-20 u-p-l-20 u-p-r-20"
@@ -48,12 +59,13 @@
 			<cpyListCard 
 				:origin="item"
 				:btns="{
-					edit: 0,
+					edit: 1,
 					call: 1,
 					add: 0,
 					remove: 1,
 					join_customer: 0
 				}"
+				@updateBtn="updateBtn"
 				@takePhoneBtn="takePhoneBtn"
 				@deletBtn="deletBtn"
 				@detail="handledetail"
@@ -102,11 +114,26 @@
 	const params = reactive({
 		p: 1,
 		cate: 0, 
+		terms: '',
 	}) 
 	const cpy_list = ref([])
 	const loadstatus = ref('loadmore') 
 	onLoad(async (options) => { 
 		init()
+		uni.$on('update',function(data){
+			console.log('监听到事件来自 update ，携带参数：' , data);
+			const type = data.type;
+			const update_id = data.id;
+			const update_data = data.data;
+			let index = cpy_list.value.findIndex(ele => ele.id == update_id);
+			if(type == 'info') {
+				let updated_data = {...cpy_list.value[index], ...update_data}
+				cpy_list.value.splice(index, 1, updated_data)
+			}
+			// else if(type == 'event') { 
+			// 	cpy_list.value[index].follow_up.unshift(update_data)
+			// }
+		})
 	})
 	onReachBottom( () => {
 		getMoreData()
@@ -122,7 +149,7 @@
 		loadstatus.value = 'loadmore'
 	}
 	async function refreshList() {
-		initParamas()
+		// initParamas()
 		init()
 	}
 	async function getMoreData() {
@@ -137,6 +164,7 @@
 		if(res.code == 1) {
 			cpy_list.value = [...cpy_list.value, ...res.list.map(ele => {
 				ele.joinstatus = 'error'
+				ele.deletstatus = 'error'
 				return {...ele}
 			})]
 			if( params.p == res.pages ) {
@@ -148,30 +176,42 @@
 	}
 	 
 	async function init() { 
-		params.p = 1;
-		cpy_list.value = [];
-		loadstatus.value = 'loadmore'
+		initParamas()
 		uni.showLoading()
 		await getData()
 	}
 	function takePhoneBtn({data}) {
-		const {a12} = data;
-		uni.makePhoneCall({
-			phoneNumber: `${a12}`,
-			async success(e) {
-				console.log(e)
-				const res = await $api.join_call({
-					params: {
-						cate: 2,
-						id: data.id
-					}
-				})
-			},
-			fail(e) {
-				console.log(e)
-			}, 
-		});
-	} 
+		const {tel} = data;
+		const arr = tel.split(',')
+		if(arr.length > 0) {
+			uni.showActionSheet({
+				itemList: arr,
+				success: function (res) {
+					console.log(arr[res.tapIndex]);
+					uni.makePhoneCall({
+						phoneNumber: `${arr[res.tapIndex]}`,
+						async success(e) {
+							console.log(e)
+							const r = await $api.join_call({
+								params: {
+									cate: 1,
+									id: data.id
+								}
+							})
+						},
+						fail(e) {
+							console.log(e)
+						}, 
+					});
+				},
+				fail: function (res) {
+					console.log(res.errMsg);
+				}
+			});
+		}
+		
+		
+	}
 	async function deletBtn({data}) {
 		const {id} = data;
 		let index = cpy_list.value.findIndex(ele => ele.id == id)
@@ -215,20 +255,41 @@
 		base.handleGoto({
 			url: '/pages/cpy/cpy',
 			params: {
-				cid: data.id,
+				id: data.id,
 				ctype: '2'
 			}
 		})
 	}
+	function updateBtn({data}) {
+		base.handleGoto({
+			url: '/pages/cpy/cpy_edit',
+			params: {
+				id: data.id,
+				ctype: '2'
+			}
+		})
+	}
+	async function handleSearch() {
+		params.p = 1; 
+		cpy_list.value = [];
+		loadstatus.value = 'loadmore'
+		uni.showLoading()
+		await getData()
+	}
 </script>
 
+<style>
+	page{
+		background-color: #f8f8f8;
+		min-height: 100vh;
+	}
+</style>
 <style lang="scss" scoped>
 	.w { 
 		padding-bottom: 60px;
 	}
 	.header-sticky {
-		border-bottom: 1rpx solid #eee;
-		height: 35px;
+		border-bottom: 1rpx solid #eee; 
 	}
 	.header {
 		height: 50px;

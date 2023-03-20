@@ -48,9 +48,16 @@
 	// const menusActiveRef = computed(() => menus.menusActive); 
 	const $api = inject('$api')  
 	menusstore.getMenusData() 
-	
-	console.log(menusActive)
-	
+	 
+	onMounted(() => {
+		let routeObj = getCurrentPages()[getCurrentPages().length - 1]
+		// console.log(routeObj)
+		menusstore.saveCurPage({
+			route: uni.$u.page(),
+			options: routeObj.options
+		})
+		console.log(menusActive)
+	})
 	function tabsClick(index) {
 		const item = menus.value[index]
 		console.log(item)

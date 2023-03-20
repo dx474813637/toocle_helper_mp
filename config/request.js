@@ -121,7 +121,7 @@ export default function($ws) {
 					// }
 					if(res.login == 0) { 
 						getCurrentPages().length > 0 && uni.setStorageSync('prePage', getCurrentPages()[getCurrentPages().length - 1].$page.fullPath)  
-						base.handleGoto({url: '/pages/login/login', type: 'redirectTo'})
+						base.handleGoto({url: '/pages/index/index', type: 'redirectTo'})
 					}
 					console.log('刷新token成功，执行队列')
 					requests.forEach(cb => cb(userid))
@@ -164,7 +164,8 @@ export default function($ws) {
 				}
 			} 
 			else if(response.data.wss_code == 1) {
-				$ws.send(response.data.wss_msg)
+				const r = uni.getStorageSync('WebSocketInfo') 
+				$ws.send('{"type":"say","to_client_name":"all","to_client_id":"all","content":"' + response.data.wss_msg + '"}') 
 			}
 		} 
 		return response.data

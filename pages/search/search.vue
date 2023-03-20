@@ -1,6 +1,6 @@
 <template>
 	<view class="w">
-		<view class="header u-flex u-flex-items-center u-flex-between u-p-l-20 u-p-r-20">
+		<view class="header u-flex bg-white u-flex-items-center u-flex-between u-p-l-20 u-p-r-20">
 			<image 
 				class="header-banner" 
 				src="https://wx.rawmex.cn/Public/zhushou/zs1.png" 
@@ -101,6 +101,7 @@
 				@takePhoneBtn="takePhoneBtn"
 				@joinBtn="joinBtn"
 				@detail="handledetail"
+				@updateBtn="updateBtn"
 			></cpyListCard>
 		</view>
 		<template v-if="cpy_list.length == 0">
@@ -191,6 +192,20 @@
 			params.area = options.area
 		}
 		handleSearch()
+		uni.$on('update',function(data){
+			console.log('监听到事件来自 update ，携带参数：' , data);
+			const type = data.type;
+			const update_id = data.id;
+			const update_data = data.data;
+			let index = cpy_list.value.findIndex(ele => ele.id == update_id);
+			if(type == 'info') {
+				let updated_data = {...cpy_list.value[index], ...update_data}
+				cpy_list.value.splice(index, 1, updated_data)
+			}
+			// else if(type == 'event') { 
+			// 	cpy_list.value[index].follow_up.unshift(update_data)
+			// }
+		})
 	})
 	onReachBottom( () => {
 		getMoreData()
@@ -242,22 +257,36 @@
 		await getData()
 	}
 	function takePhoneBtn({data}) {
-		const {a12} = data;
-		uni.makePhoneCall({
-			phoneNumber: `${a12}`,
-			async success(e) {
-				console.log(e)
-				const res = await $api.join_call({
-					params: {
-						cate: 1,
-						id: data.id
-					}
-				})
-			},
-			fail(e) {
-				console.log(e)
-			}, 
-		});
+		const {tel} = data;
+		const arr = tel.split(',')
+		if(arr.length > 0) {
+			uni.showActionSheet({
+				itemList: arr,
+				success: function (res) {
+					console.log(arr[res.tapIndex]);
+					uni.makePhoneCall({
+						phoneNumber: `${arr[res.tapIndex]}`,
+						async success(e) {
+							console.log(e)
+							const r = await $api.join_call({
+								params: {
+									cate: 1,
+									id: data.id
+								}
+							})
+						},
+						fail(e) {
+							console.log(e)
+						}, 
+					});
+				},
+				fail: function (res) {
+					console.log(res.errMsg);
+				}
+			});
+		}
+		
+		
 	}
 	async function joinBtn({data}) {
 		const {id} = data;
@@ -276,6 +305,15 @@
 		base.handleGoto({
 			url: '/pages/cpy/cpy',
 			params: {
+				id: data.id,
+				ctype: '1'
+			}
+		})
+	}
+	function updateBtn({data}) {
+		base.handleGoto({
+			url: '/pages/cpy/cpy_edit',
+			params: {
 				cid: data.id,
 				ctype: '1'
 			}
@@ -283,6 +321,12 @@
 	}
 </script>
 
+<style>
+	page{
+		background-color: #f8f8f8;
+		min-height: 100vh;
+	}
+</style>
 <style lang="scss" scoped>
 	.w { 
 		padding-bottom: 60px;

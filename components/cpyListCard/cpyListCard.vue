@@ -1,6 +1,6 @@
 <template>
-	<view class="card bg-white uni-shadow-base u-radius-6 u-p-25"> 
-		<view class="card-main" @click="cardClick">
+	<view class="card bg-white uni-shadow-base u-radius-6 u-p-25" @click="cardClick"> 
+		<view class="card-main">
 			<view class="cpy-name u-m-b-20 u-flex u-flex-items-center">
 				<view class="u-m-r-10" v-if="origin.type">
 					<u-tag size="mini" :text="origin.type" type="warning" plain plainFill borderColor="transparent"></u-tag>
@@ -62,35 +62,33 @@
 			</view>
 		</view>
 		<view class="card-btns u-flex u-flex-items-center u-flex-between u-p-t-20">
-			<view class="item" v-if="btns.edit">
+			<view class="item" v-if="btns.edit" @click.stop="updateBtn">
 				<u-button size="small" icon="info-circle" type="info" plain :customStyle="btnStyle" text="纠错完善"></u-button>
 			</view>
-			<view class="item" v-if="origin.a12 && btns.call">
-				<u-button size="small" icon="phone-fill"  type="primary" :customStyle="btnStyle" @click.stop="takePhoneBtn" text="极速联系"></u-button>
+			<view class="item" v-if="origin.a12 && btns.call" @click.stop="takePhoneBtn">
+				<u-button size="small" icon="phone-fill"  type="primary" :customStyle="btnStyle" text="极速联系"></u-button>
 			</view>
-			<view class="item" v-if="btns.join_customer">
-				<u-button size="small" icon="plus-circle"  type="warning" :customStyle="btnStyle" @click.stop="join2Btn" text="加入通讯录"></u-button>
+			<view class="item" v-if="btns.join_customer" @click.stop="join2Btn">
+				<u-button size="small" icon="plus-circle"  type="warning" :customStyle="btnStyle" text="加入通讯录"></u-button>
 			</view>
-			<view class="item" v-if="btns.add">
+			<view class="item" v-if="btns.add" @click.stop="joinBtn">
 				<u-button 
 					size="small" 
 					:icon="origin.joinstatus == 'success'? 'checkmark-circle' :'plus-circle'" 
 					:type="origin.joinstatus == 'success'? 'success' :'error'"  
 					throttleTime="500"
-					:customStyle="btnStyle" 
-					@click.stop="joinBtn"
+					:customStyle="btnStyle"  
 					:loading="origin.joinstatus == 'loading'"
 					:text="origin.joinstatus == 'success'? '加入成功' :'加入清单'"
 					></u-button>
 			</view>
-			<view class="item" v-if="btns.remove">
+			<view class="item" v-if="btns.remove" @click.stop="deletBtn">
 				<u-button 
 					size="small" 
 					icon="trash" 
 					type="error"  
 					throttleTime="500"
-					:customStyle="btnStyle" 
-					@click.stop="deletBtn"
+					:customStyle="btnStyle"  
 					:loading="origin.deletstatus == 'loading'"
 					text="移出清单"
 					></u-button>
@@ -146,7 +144,8 @@ import { join_customer } from '../../config/apis/interface/base';
 		"joinBtn",
 		"join2Btn",
 		"detail",
-		"deletBtn"
+		"deletBtn",
+		"updateBtn"
 	]);
 	
 	function handleTagsCopy(name) { 
@@ -182,6 +181,9 @@ import { join_customer } from '../../config/apis/interface/base';
 	function cardClick() { 
 		emits("detail", {data: props.origin});
 	}
+	function updateBtn() { 
+		emits("updateBtn", {data: props.origin});
+	}
 	
 </script>
  
@@ -209,7 +211,7 @@ import { join_customer } from '../../config/apis/interface/base';
 				justify-content: flex-start;
 			}
 			&:last-child {
-				padding-rihgt: 0;
+				padding-right: 0;
 				justify-content: flex-end;
 				&::after {
 					display: none;

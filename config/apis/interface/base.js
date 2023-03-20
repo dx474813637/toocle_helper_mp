@@ -6,11 +6,17 @@ export const login_cancel = (data) => http.get('login_cancel', data)
 // memu 
 export const memu = (data) => http.get('memu', data) 
 
+// my_info 个人资料
+export const my_info = (data) => http.get('my_info', data) 
+// info_edit 编辑个人资料 psw密码 phone手机 name姓名 tel电话 email邮箱 密码为空不修改密码。
+export const info_edit = (data) => http.get('info_edit', data) 
 // zhushou_login 登录接口 login passwd
 // 测试账号100 密码123456
 export const zhushou_login = (data) => http.get('zhushou_login', data) 
 // logout 用户退出
 export const logout = (data) => http.get('logout', data) 
+// about 说明接口 参数id 默认26
+export const about = (data) => http.get('about', data) 
 
 
 // upimg 上传图片
@@ -51,7 +57,7 @@ export const login_company_detail = (data) => http.get('login_company_detail', d
 // type=>类别 a1=>企业名称 a2=>经营状态 a3=>法定代表人 a4=>注册资本 a5=>实缴资本 a6=>成立日期 a7=>核准日期 
 // a8=>营业期限 a9=>所属省份 a10=>所属城市 a11=>所属区县 a12=>电话 a13=>更多电话 a14=>邮箱 a15=>更多邮箱 
 // a16=>统一社会信用代码 a17=>纳税人识别号 a18=>工商注册号 a19=>组织机构代码 a20=>参保人数 a21=>企业类型 
-// a22=>所属行业 a23=>曾用名 a24=>注册地址 a25=>最新年报地址 a26=>网址 a27=>经营范围
+// a22=>所属行业 a23=>曾用名 a24=>注册地址 a25=>最新年报地址 a26=>网址 a27=>经营范围 a27=>真实联系人
 export const company_update = (data) => http.get('company_update', data) 
 
 // add_company_tag 企业备注 参数info 备注内容 id是清单/拨打/客户 列表里的id。
@@ -61,4 +67,5 @@ export const company_update = (data) => http.get('company_update', data)
 // riqi 跟进日期 跟进时必填
 // img 标签时不传或空，跟进时不是必填
 export const add_company_tag = (data) => http.get('add_company_tag', data) 
-
+// del_tags 参数id
+export const del_tags = (data) => http.get('del_tags', data) 
