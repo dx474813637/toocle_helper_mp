@@ -268,11 +268,7 @@
 		if(id.value) {
 			uni.showLoading()
 			await getData()
-		}else {
-			uni.showToast({
-				title: 'id有误'
-			})
-		}
+		} 
 		
 	})
 	

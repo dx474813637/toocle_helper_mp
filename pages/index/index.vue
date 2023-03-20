@@ -141,6 +141,7 @@
 			uni.reLaunch({
 				url: '/pages/index/home'
 			})
+			
 		}else {
 			hide.value = 0
 		}
@@ -185,9 +186,11 @@
 		if(res.code == 1) {  
 			// uni.setStorageSync('userid', '')
 			// naviBack()
-			 uni.reLaunch({
+			uni.showLoading()
+			await user.getUserInfo()
+			uni.reLaunch({
 				 url: '/pages/index/home'
-			 })
+			})
 		}
 		
 	}

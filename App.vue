@@ -13,10 +13,11 @@
 		onHide,
 	} from "@dcloudio/uni-app";
 	const $ws = inject('$ws')
+	const $api = inject('$api')
 	
 	const base = baseStore() 
 	const user = userStore() 
-	onLaunch(() => {
+	onLaunch(async () => {
 		if (uni.canIUse('getUpdateManager')) {
 			const updateManager = uni.getUpdateManager();
 			updateManager.onCheckForUpdate(function(res) {
@@ -46,9 +47,15 @@
 				}
 			});
 		}
-		
-		routingIntercept($ws)
-		
+		routingIntercept($ws)  
+		if(!user.user_info.user) {
+			const res = await user.getUserInfo()
+			if(res.code == 2) {
+				uni.redirectTo({
+					url: '/pages/index/index'
+				})
+			}
+		}
 	});
 	onShow(async (options) => {
 		console.log('opt.query', options.query)  
@@ -56,12 +63,14 @@
 			base.saveShareInfo(options.query.share_other) 
 		} 
 		if(uni.getStorageSync('WebSocketInfo')) $ws.init()
-		console.log(user.user.login)
-		// if(user.user.login == 0) { 
+		
+		// if(!user.user_info.user) {
 		// 	uni.redirectTo({
 		// 		url: '/pages/index/index'
 		// 	})
+		// 	// base.handleGoto({url: '/pages/index/index', type: 'redirectTo'}) 
 		// }
+		
 	});
 	onHide((options) => {
 		// console.log('App Hide')

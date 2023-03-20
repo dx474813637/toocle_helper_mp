@@ -20,6 +20,8 @@ export const userStore = defineStore('user', {
 			this.user_loading = false
 			if(res.code == 1) {
 				this.user_info = res.list
+			}else {
+				this.user_info = {}
 			}
 			return res
 		},
@@ -30,14 +32,9 @@ export const userStore = defineStore('user', {
 			uni.removeStorageSync('poster')
 			uni.removeStorageSync('userid')
 			uni.removeStorageSync('WebSocketInfo')
+			
 			uni.reLaunch({
-				url: '/pages/index/index',
-				success() {
-					uni.showToast({
-						title: res.msg,
-						icon: 'none'
-					})
-				}
+				url: '/pages/index/index'
 			})
 		},
 		async logout() {

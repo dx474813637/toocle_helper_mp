@@ -14,7 +14,7 @@ const base = baseStore(pinia)
  * @description 自定义路由拦截
  */ 
  const whiteList = [
- 	{ pattern: /^\/pages\/login*/ },
+ 	'/pages/index/index',
  	// '/pages/user/index',
  	// {
  	// 	pattern: /^\/pages\/list.*/
@@ -32,19 +32,20 @@ const base = baseStore(pinia)
  	// { pattern: /^\/pages\/index\/(?!attention).*/ },
  ];
  // 用户信息未完善 权限列表
-const userStateList =  [{
- 		pattern: /^\/pages\/my\/broker\/edit*/
- 	},
- 	{
- 		pattern: /^\/pages\/my\/broker\/prod_edit*/
- 	},
+const userStateList =  [
+	// {
+ // 		pattern: /^\/pages\/my\/broker\/edit*/
+ // 	},
+ // 	{
+ // 		pattern: /^\/pages\/my\/broker\/prod_edit*/
+ // 	},
  ]
  
 export function permissionBase(e, $ws) {
 	 
 	 	const url = e.url.split('?')[0]
 	 	console.log('url:addInterceptor ===> ', e.url) 
-	 	const r = uni.getStorageSync('WebSocketInfo')
+	 	// const r = uni.getStorageSync('WebSocketInfo')
 	 	// $ws.send('{"type":"xcx","client_name":"' + r.w_login + '","rawmex_login":"' +
 	 	// 	r.login + '","room_id":"zhushou_xcx","token":"' + r.w_token +
 	 	// 	'","login":"' + r.w_login + '","content":"' + e.url + '"}')
@@ -60,10 +61,12 @@ export function permissionBase(e, $ws) {
 	 		})
 	 	}
 	 	// 不是白名单并且没有token
-	 	if (!pass && user.login == 0) {
-	 	
-	 		uni.setStorageSync('prePage', e.url)
+		// console.log(user.user.login, user.user_info.login)
+		// console.log(!user.user.login, !user.user_info.login, pass)
+	 	if (!pass && (!user.user.login || !user.user_info.user)) {
 			
+	 		// uni.setStorageSync('prePage', e.url)
+			// user.clearLogout()
 			base.handleGoto({url: '/pages/index/index', type: 'redirectTo'}) 
 	 		return false
 	 	}
