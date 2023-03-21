@@ -9,11 +9,7 @@
 				<view class="u-flex u-flex-items-center" >
 					<view @click="base.handleGoto('/pages/user/setting')" class="step1 item u-p-10">
 						<i class="custom-icon-shezhi1 custom-icon u-font-38"></i>
-					</view>
-					<view @click="base.handleGoto('/pages/msg/msg')" class="step2 item u-p-10" style="position: relative;">
-						<i class="custom-icon-comment custom-icon u-font-40"></i>
-						<u-badge absolute :offset="[5,3]" isDot :show="newMsg == '1'" bgColor="#ff2225"></u-badge>
-					</view>
+					</view> 
 				</view>
 			</template>
 			
@@ -23,52 +19,18 @@
 			<view class="user-img u-flex u-flex-items-center u-flex-center" @click="base.handleGoto('/pages/user/info')">
 				<i class="custom-icon-myfill custom-icon"></i>
 			</view>
-			<view class="user-info u-flex-1" @click="base.handleGoto('/pages/user/info')">
-				<template v-if="user.user_loading">
-					<u-loading-icon></u-loading-icon>
-				</template>
-				<template v-if="user.user.login != 0">
-					<view class="item u-flex u-flex-items-center"> 
-						<view class="name u-line-1 u-font-38 step7">{{user.user_info.name || user.user.login}}</view>
-						<!-- <view v-if="myCpy.type" class="step8 sub text-white u-font-24 u-flex u-flex-items-center u-p-4 u-p-l-10 u-p-r-16 u-m-l-20">
-							<text >{{myCpy.type | type2str}}</text> 
-						</view>
-						<view 
-							style="background: #f90;"
-							v-if="myCpy.state == 0" class="sub text-white u-font-24 u-flex u-flex-items-center u-p-4 u-p-l-10 u-p-r-16 u-m-l-20">
-							<text>{{myCpy.state | myCpyAuth2str}}</text>
-						</view>
-						<view 
-							style="background: #d43a3a;"
-							v-else-if="myCpy.state == 2" class="sub text-white u-font-24 u-flex u-flex-items-center u-p-4 u-p-l-10 u-p-r-16 u-m-l-20">
-							<text>{{myCpy.state | myCpyAuth2str}}</text>
-						</view> -->
+			<view class="user-info u-flex-1" @click="base.handleGoto('/pages/user/info')"> 
+				<view class="item u-flex u-flex-items-center"> 
+					<view class="name u-line-1 u-font-38 step7">{{user.user_info.name}}</view> 
+				</view>
+				<view class="item">
+					<view class="sub2 u-font-28 step9 text-light u-flex u-flex-items-center">
+						<text >{{user.user_info.phone}}</text> 
+						<i class="custom-icon-edit custom-icon u-font-28 text-light u-m-l-10"></i>
 					</view>
-					<view class="item">
-						<view class="sub2 u-font-28 step9 text-light u-flex u-flex-items-center">
-							<text v-if="user.user_info.phone">{{user.user_info.phone}}</text>
-							<text v-else>点击完善用户信息</text>
-							<i class="custom-icon-edit custom-icon u-font-28 text-light u-m-l-10"></i>
-						</view>
-					</view>
-				</template>
-				<template v-else>
-					<view class="item u-flex u-flex-items-center">
-						<view class="name u-line-1 u-font-38 step7">请先登录</view>
-					</view>
-				</template>
+				</view> 
 				
-			</view>
-			<!-- <view>
-				<view class="u-p-l-10 u-m-b-10 u-flex text-dark" @click="base.handleGoto('/pages/my/account/change_account')">
-					<view class="u-p-r-10 ">切换</view>
-					<u-icon name="arrow-right" color="#222" size="17"></u-icon>
-				</view>
-				<view class="dingyue-wrap " v-if="dingyue.zt == '1'">
-					<u-button type="primary" plain shape="circle" @click="dingyueEvent" size="mini">{{dingyue.title}}</u-button>
-				</view>
-			</view> -->
-			
+			</view> 
 		</view>
 		 
 		
@@ -153,17 +115,14 @@
 <script setup>
 	import {
 		onLoad,
-		onShow,
-		onShareTimeline,
-		onShareAppMessage,
+		onShow, 
 		onReachBottom,
 	} from "@dcloudio/uni-app";
 	import {
 		ref,
 		reactive,
 		computed
-	} from 'vue'
-	import {share} from '@/composition/share.js'
+	} from 'vue' 
 	import { inject } from 'vue' 
 	// import menusBar from '@/components/menusBar/menusBa	r.vue'
 	import {

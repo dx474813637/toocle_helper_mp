@@ -1,6 +1,6 @@
 <template>
 	<view class="card bg-white uni-shadow-base u-radius-6" @click="cardClick"> 
-		<view class="card-header u-flex u-flex-between u-flex-items-center u-font-24 u-p-20   ">
+		<view class="card-header u-flex u-flex-between u-flex-items-center u-font-24 u-p-l-20 u-p-t-20 u-p-r-20 ">
 			<view class=" ">{{origin.uptime}} 转为客户</view>
 			<view>
 				<u-tag 
@@ -161,8 +161,8 @@
 		color: #666;
 	}
 	.card-header {  
-		background-color: #e8f3ff;
-		color: #939eb7
+		// background-color: #e8f3ff;
+		color: #999
 	}
 	.info {
 		border-color: #eee!important;

@@ -1,8 +1,10 @@
 <template>
-	<view class="w u-p-20">
-		<view class="u-p-20 text-primary u-font-38 u-text-center u-font-bold">
+	<view class="w">
+		<navBar fixed bgColor="#fff" backBtn :title="id ? '更新企业信息' : '新增企业信息'" ></navBar>
+		<u-status-bar></u-status-bar>
+		<!-- <view class="u-p-20 text-primary u-font-38 u-text-center u-font-bold">
 			{{id ? '更新企业信息' : '新增企业信息'}}
-		</view>
+		</view> -->
 		<u--form
 			labelPosition="left"
 			:model="form" 
@@ -43,10 +45,11 @@
 			<u-form-item prop="a3" label="法定代表人" v-if="form.a3">
 				<view>{{form.a3}}</view> 
 			</u-form-item> 
-			<u-form-item prop="a28" label="真实联系人" >
+			<u-form-item prop="a28" label="真实联系人" required >
 				<u--input 
 					v-model="form.a28"
 					placeholder="真实联系人"
+					:customStyle="{borderColor: '#f99090!important'}"
 				></u--input>
 			</u-form-item> 
 			<u-form-item prop="a4" label="注册资本" v-if="form.a4">
@@ -91,10 +94,11 @@
 					placeholder="所属区县"
 				></u--input>
 			</u-form-item> 
-			<u-form-item prop="a12" label="电话">
+			<u-form-item prop="a12" label="电话" required >
 				<u--input 
 					v-model="form.a12"
 					placeholder="电话"
+					:customStyle="{borderColor: '#f99090!important'}"
 				></u--input>
 			</u-form-item> 
 			<u-form-item prop="a13" label="更多电话">
@@ -306,6 +310,10 @@
 	
 </script>
 
-<style lang="scss">
+<style lang="scss" scoped>
+	.w { 
+		padding-bottom: 60px;
+		padding-top: 44px;
+	}
 
 </style>

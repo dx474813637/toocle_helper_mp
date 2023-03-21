@@ -1,5 +1,7 @@
 <template>
 	<view class="w"> 
+		<navBar fixed backBtn :title="onlineControl.title" ></navBar>
+		<u-status-bar></u-status-bar>
 		<view class="u-p-20 u-flex u-flex-items-center u-flex-end" :style="{backgroundColor: base.themeColor}">
 			<view class="u-flex u-flex-items-center text-white u-font-28" 
 				@click="base.handleGoto({
@@ -58,6 +60,7 @@
 					plain 
 					plainFill 
 					borderColor="transparent"  
+					@click="removeBtn"
 				></u-tag>
 			</view>
 			<view class="item " style="flex: 0 0 60%">
@@ -69,6 +72,7 @@
 					plain 
 					plainFill 
 					borderColor="transparent"  
+					@click="takePhoneBtn"
 				></u-tag>
 			</view>
 		</view>
@@ -113,6 +117,7 @@
 									:key="item.id"
 								>
 									<template #desc>
+										<image :src="item.img" v-if="item.img" class="jindu-img" mode="widthFix"></image>
 										<view class="u-font-28 text-light">
 											<view class="u-m-b-10 text-light2">提醒日期：{{item.riqi}}</view>
 											<view class="u-m-b-10">记录时间：{{item.uptime}}</view>
@@ -139,9 +144,7 @@
 <script setup>
 	import {
 		onLoad,
-		onShow,
-		onShareTimeline,
-		onShareAppMessage,
+		onShow, 
 		onReachBottom,
 	} from "@dcloudio/uni-app";
 	import {
@@ -150,6 +153,7 @@
 		computed
 	} from 'vue'
 	import {share} from '@/composition/share.js'
+	const {setOnlineControl, onlineControl} = share() 
 	import { inject } from 'vue' 
 	// import menusBar from '@/components/menusBar/menusBa	r.vue'
 	import {
@@ -186,6 +190,7 @@
 	async function getData() {
 		const res = await $api.login_company_detail({params: {id: id.value}})
 		if(res.code == 1 ) {
+			setOnlineControl(res)
 			detailData.value = res
 		}
 	}
@@ -238,28 +243,44 @@
 			detailData.value.tag.splice(tagIndex, 1)
 		}
 	}
-	
-	function takePhoneBtn({data}) {
-		const {tel} = data;
-		const arr = tel.split(',')
+	function removeBtn() {
+		uni.showModal({
+			title: '提示',
+			content: '是否移除该客户',
+			success: async function (r) {
+				if (r.confirm) {
+					const res = await $api.exit_customer({params: {
+						id: id.value
+					}})
+					if(res.code == 1) {
+						uni.$emit('update',{ type: 'remove', data: {}, id: id.value })
+						uni.showToast({
+							title: res.msg,
+							icon:'none'
+						})
+						setTimeout(() => {
+							uni.navigateBack()
+						}, 1000)
+					}
+				} else if (r.cancel) {
+					console.log('用户点击取消');
+				}
+			}
+		});
+	}
+	function takePhoneBtn() {
+		const {tel} = detailData.value.list; 
+		const arr = String(tel).split(',')
 		if(arr.length > 0) {
 			uni.showActionSheet({
 				itemList: arr,
-				success: function (res) {
-					console.log(arr[res.tapIndex]);
+				success: function (res) { 
 					uni.makePhoneCall({
 						phoneNumber: `${arr[res.tapIndex]}`,
 						async success(e) {
-							console.log(e)
-							const r = await $api.join_call({
-								params: {
-									cate: 1,
-									id: data.id
-								}
-							})
+							 
 						},
-						fail(e) {
-							console.log(e)
+						fail(e) { 
 						}, 
 					});
 				},
@@ -291,6 +312,13 @@
 		color: #666;
 	}
 </style>
-<style lang="scss">
-
+<style lang="scss" scoped>
+	.w { 
+		padding-bottom: 60px;
+		padding-top: 44px;
+	}
+	.jindu-img {
+		width: 100%;
+		border-radius: 8px;
+	}
 </style>

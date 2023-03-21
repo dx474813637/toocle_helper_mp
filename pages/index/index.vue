@@ -1,5 +1,5 @@
 <template>
-	<view class="wrap" v-if="hide != 1">
+	<view class="wrap" v-if="show">
 		<!-- <view class="top"></view> -->
 		<view class="content">
 			<view class="title">欢迎登录</view>
@@ -134,17 +134,18 @@
 		}
 		return {}
 	})
-	const hide = ref(1)
-	onLoad(async () => {
+	const show = computed(() => { 
+		return !user.user_info?.user 
+	})
+	onLoad(async () => { 
 		const res = await user.getUserInfo()
 		if(res.code == 1) {
 			uni.reLaunch({
 				url: '/pages/index/home'
 			})
 			
-		}else {
-			hide.value = 0
-		}
+		}  
+		
 	})
 	onReady(() => {
 		handleSetRules()

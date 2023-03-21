@@ -1,27 +1,46 @@
 <template>
 	<view class="w">
+		<navBar fixed bgColor="#fff" :title="onlineControl.title" ></navBar>
+		<u-notify ref="notify"></u-notify>
+		<u-status-bar></u-status-bar>
 		<view class="header u-flex bg-white u-flex-items-center u-flex-between u-p-l-20 u-p-r-20">
 			<image 
 				class="header-banner" 
 				src="https://wx.rawmex.cn/Public/zhushou/zs1.png" 
 				mode="heightFix"
 			></image>
-			<view> 
-				<u-tag 
-					type="primary" 
-					plain 
-					plainFill
-					size="mini"
-					icon="plus-circle"
-					text="我要新加" 
-					borderColor="transparent"
-					@click="base.handleGoto('/pages/cpy/cpy_edit')"
-				></u-tag>
+			<view class="item u-flex u-flex-items-center">
+				<view>
+					<u-tag
+						type="error" 
+						plain 
+						plainFill
+						size="mini"
+						icon="trash"
+						text="一键清空" 
+						borderColor="transparent"
+						@click="clearAllBtn"
+					></u-tag> 
+					
+				</view>
+				<view class="u-m-l-20">
+					<u-tag 
+						type="primary" 
+						plain 
+						plainFill
+						size="mini"
+						icon="plus-circle"
+						text="我要新加" 
+						borderColor="transparent"
+						@click="base.handleGoto('/pages/cpy/cpy_edit')"
+					></u-tag>
+					
+				</view>
 			</view>
 		</view>
-		<u-sticky zIndex="50" bgColor="#fff">
+		<u-sticky zIndex="50" bgColor="#fff" :offsetTop="base.sys.safeAreaInsets.top + 44 ">
 			<view class="header-sticky "> 
-				<view class="u-flex u-flex-items-center u-flex-between u-p-l-20 u-p-r-20">
+				<!-- <view class="u-flex u-flex-items-center u-flex-between u-p-l-20 u-p-r-20">
 					<view class="item u-flex u-flex-items-center">
 						<u-icon name="order" color="#f90" size="20" ></u-icon>
 						<view class="text-primary u-font-32 u-m-l-15">我的备打清单</view>
@@ -38,7 +57,7 @@
 							@click="clearAllBtn"
 						></u-tag> 
 					</view>
-				</view> 
+				</view> -->
 				<view class="search-w u-p-20 bg-white">
 					<u-search 
 						placeholder="输入搜索关键字" 
@@ -91,23 +110,25 @@
 <script setup>
 	import {
 		onLoad,
-		onShow,
-		onShareTimeline,
-		onShareAppMessage,
+		onShow, 
 		onReachBottom,
 	} from "@dcloudio/uni-app";
 	import {
 		ref,
 		reactive,
 		computed
-	} from 'vue'
-	import {share} from '@/composition/share.js'
+	} from 'vue' 
 	import { inject } from 'vue' 
 	// import menusBar from '@/components/menusBar/menusBa	r.vue'
 	import {
 		baseStore,
 		menusStore
 	} from '@/stores/base';
+	import {share} from '@/composition/share.js'
+	const {setOnlineControl, onlineControl} = share() 
+	import {baseNotify} from '@/composition/notify.js'
+	const notify = ref()
+	baseNotify(notify)
 	const base = baseStore()
 	const menus = menusStore()
 	const $api = inject('$api');
@@ -120,6 +141,8 @@
 	const loadstatus = ref('loadmore') 
 	onLoad(async (options) => { 
 		init()
+		
+		onlineControl.title="我的备打清单"
 		uni.$on('update',function(data){
 			console.log('监听到事件来自 update ，携带参数：' , data);
 			const type = data.type;
@@ -287,12 +310,16 @@
 <style lang="scss" scoped>
 	.w { 
 		padding-bottom: 60px;
+		padding-top: 44px;
 	}
 	.header-sticky {
 		border-bottom: 1rpx solid #eee; 
 	}
 	.header {
-		height: 50px;
+		height: 45px;
+		image {
+			height: 35px;
+		}
 	}
 	.filter-w {
 		height: 35px;

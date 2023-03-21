@@ -1,5 +1,7 @@
 <template>
-	<view class="w u-p-20"> 
+	<view class="w u-p-l-20 u-p-r-20">
+		<navBar fixed bgColor="#fff" backBtn :title="onlineControl.title" ></navBar>
+		<u-status-bar></u-status-bar>
 		<view class="u-radius-10 bg-white u-p-30">
 			<u--form
 				labelPosition="left"
@@ -119,6 +121,7 @@
 		computed
 	} from 'vue'
 	import {share} from '@/composition/share.js'
+	const {setOnlineControl, onlineControl} = share() 
 	import { inject } from 'vue' 
 	// import menusBar from '@/components/menusBar/menusBa	r.vue'
 	import {
@@ -165,6 +168,7 @@
 	async function getData() {
 		const res = await $api[apiFunc.value]({params: {id: id.value}})
 		if(res.code == 1 ) {
+			setOnlineControl(res)
 			form.value = res.list
 		}
 	} 
@@ -176,6 +180,10 @@
 		background-color: #f8f8f8;
 	}
 </style>
-<style lang="scss">
+<style lang="scss" scoped>
+	.w { 
+		padding-bottom: 60px;
+		padding-top: 60px;
+	}
 
 </style>

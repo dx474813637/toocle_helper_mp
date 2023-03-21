@@ -20,9 +20,11 @@ export const userStore = defineStore('user', {
 			this.user_loading = false
 			if(res.code == 1) {
 				this.user_info = res.list
+				
 			}else {
 				this.user_info = {}
 			}
+			uni.setStorageSync('WebSocketInfo', res)
 			return res
 		},
 		clearLogout() {

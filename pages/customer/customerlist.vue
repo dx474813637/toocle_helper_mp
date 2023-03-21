@@ -1,5 +1,7 @@
 <template>
 	<view class="w">
+		<navBar fixed bgColor="#fff" backBtn title="我的通讯录" ></navBar>
+		<u-status-bar></u-status-bar>
 		<!-- <view class="header u-flex u-flex-items-center u-flex-between u-p-l-20 u-p-r-20">
 			<image 
 				class="header-banner" 
@@ -19,7 +21,7 @@
 			</view>
 		</view> -->
 		
-		<u-sticky zIndex="50" bgColor="#fff">
+		<u-sticky zIndex="50" bgColor="#fff" :offsetTop="base.sys.safeAreaInsets.top + 44 ">
 			<view class="header-sticky">
 				<view class="search-w u-p-20 bg-white">
 					<u-search 
@@ -73,9 +75,7 @@
 <script setup>
 	import {
 		onLoad,
-		onShow,
-		onShareTimeline,
-		onShareAppMessage,
+		onShow, 
 		onReachBottom,
 	} from "@dcloudio/uni-app";
 	import {
@@ -84,6 +84,7 @@
 		computed
 	} from 'vue'
 	import {share} from '@/composition/share.js'
+	const {setOnlineControl, onlineControl} = share() 
 	import { inject } from 'vue' 
 	// import menusBar from '@/components/menusBar/menusBa	r.vue'
 	import {
@@ -117,7 +118,10 @@
 			else if(type == 'event') { 
 				cpy_list.value[index].follow_up.unshift(update_data)
 			}
-		})
+			else if(type == 'remove') { 
+				cpy_list.value.splice(index, 1)
+			}
+		}) 
 	})
 	onReachBottom( () => {
 		getMoreData()
@@ -296,6 +300,7 @@
 <style lang="scss" scoped>
 	.w { 
 		padding-bottom: 60px;
+		padding-top: 44px;
 	}
 	.header-sticky {
 		border-bottom: 1rpx solid #eee; 

@@ -1,5 +1,7 @@
 <template>
-	<view class="w u-p-20"> 
+	<navBar fixed bgColor="#fff" backBtn title="用户信息" ></navBar>
+	<u-status-bar></u-status-bar>
+	<view class="w u-p-l-20 u-p-r-20"> 
 		<u--form
 			labelPosition="left"
 			:model="form" 
@@ -53,9 +55,7 @@
 <script setup>
 	import {
 		onLoad,
-		onShow,
-		onShareTimeline,
-		onShareAppMessage,
+		onShow, 
 		onReachBottom,
 	} from "@dcloudio/uni-app";
 	import {
@@ -117,6 +117,10 @@
 	
 </script>
 
-<style lang="scss">
+<style lang="scss" scoped>
+	.w { 
+		padding-bottom: 60px;
+		padding-top: 44px;
+	}
 
 </style>

@@ -1,12 +1,14 @@
 <template>
 	<view class="w"> 
+		<navBar fixed :title="onlineControl.title" ></navBar>
+		<u-status-bar></u-status-bar>
 		<image 
 			class="header-banner" 
 			src="https://wx.rawmex.cn/Public/zhushou/zs3.png" 
 			mode="widthFix"
 		></image> 
 		
-		<u-sticky zIndex="50" >
+		<u-sticky zIndex="50" :offsetTop="base.sys.safeAreaInsets.top + 44 " >
 			<view class="u-p-l-30 u-p-r-30 u-p-b-10  " :style="{background: base.themeColor}">
 				<view class="u-radius-6 bg-white u-flex u-flex-items-center" style="height: 45px;">
 					<view class="search-icon u-p-l-10">
@@ -100,7 +102,7 @@
 			</view>
 		</view>
 		<view class=" bg-white u-m-t-40 u-p-t-30 u-p-b-20 list u-radius-15">
-			<u-sticky zIndex="50" offsetTop="50">
+			<u-sticky zIndex="50" :offsetTop="base.sys.safeAreaInsets.top + 44 + 50">
 				<view class="bg-white" >
 					<u-tabs
 						:current="tabs_current"
@@ -171,7 +173,7 @@
 	} from 'vue'
 	import {share} from '@/composition/share.js'
 	import { inject } from 'vue' 
-	// import menusBar from '@/components/menusBar/menusBa	r.vue'
+	
 	import {
 		baseStore,
 		menusStore
@@ -197,7 +199,7 @@
 	const search_type_list = ref([
 		[
 			{
-				name: '客户',
+				name: '企业',
 				key: 'terms'
 			},
 			{
@@ -228,7 +230,7 @@
 		}
 	])
 	const list_api = computed(() => cpy_tabs_list.value[tabs_current.value].apiFunc)
-	share()
+	const {setOnlineControl, onlineControl} = share() 
 	onLoad(async (option) => { 
 		// if(user.user.login == 0) {
 		// 	uni.redirectTo({
@@ -299,6 +301,7 @@
 	async function getHome() {
 		const res = await $api.home() ;
 		if(res.code == 1) {
+			setOnlineControl(res)
 			search_list.value = res.list
 		}
 	}
@@ -407,6 +410,7 @@
 <style lang="scss" scoped>
 	.w { 
 		padding-bottom: 60px;
+		padding-top: 44px;
 	}
 	.header-banner {
 		width: 100vw;

@@ -49,7 +49,7 @@ export function share() {
 	})
 
 	function setOnlineControl(res) {
-
+		console.log(res)
 		onlineControl.share_img = res.share_img
 		if (res.share_title) onlineControl.share_title = res.share_title
 		if (res.title) onlineControl.title = res.title
@@ -71,6 +71,7 @@ export function share() {
 			})
 		}
 		let options = {
+			route: '/'+curPage.route,
 			...curPage.options,
 			...customShareParams,
 			poster: uni.getStorageSync('poster'),
@@ -89,6 +90,7 @@ export function share() {
 
 		let basePath = curPage.route
 		let options = {
+			route: '/'+curPage.route,
 			...curPage.options,
 			...customShareParams,
 			poster: uni.getStorageSync('poster'),

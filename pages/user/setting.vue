@@ -1,5 +1,7 @@
 <template>
-	<view>
+	<view class="w">
+		<navBar fixed bgColor="#fff" backBtn title="通用" ></navBar>
+		<u-status-bar></u-status-bar>
 		<u-cell-group>
 			
 			<view v-for="(item, index) in list" :key="index">
@@ -60,80 +62,13 @@
 				title: '用户管理',
 				type: 'label'
 			},
+			 
 			{
 				title: '用户信息',
 				icon: 'account',
 				type: 'cell',
-				url: '/pages/my/user/info'
-			},
-			{
-				title: '地址管理',
-				icon: 'map',
-				type: 'cell',
-				url: '/pages/my/address/address'
-			},
-			{
-				title: '我的分享码',
-				icon: 'share-square',
-				type: 'cell',
-				url: '/pages/my/myEwm/myEwm'
-			},
-			// {
-			// 	title: '订阅管理',
-			// 	type: 'label'
-			// },
-			// {
-			// 	title: '订阅设置',
-			// 	icon: 'bookmark',
-			// 	type: 'cell',
-			// 	url: '/pages/my/user/subscribe_set'
-			// },
-			// {
-			// 	title: '订阅列表',
-			// 	icon: 'bell',
-			// 	type: 'cell',
-			// 	url: '/pages/my/user/subscribe_list'
-			// },
-			{
-				title: '账号管理',
-				type: 'label'
-			},
-			// {
-			// 	title: '登录历史记录',
-			// 	icon: 'clock',
-			// 	type: 'cell',
-			// 	url: '/pages/my/account/log'
-			// },
-			{
-				title: '修改密码',
-				icon: 'lock',
-				type: 'cell',
-				url: '/pages/my/account/login_psw_update'
-			},
-			{
-				title: '短信重设密码',
-				icon: 'email',
-				type: 'cell',
-				url: '/pages/my/account/login_psw_reset'
-			},
-			// {
-			// 	title: '绑定账号',
-			// 	icon: 'man-add',
-			// 	type: 'cell',
-			// 	url: '/pages/my/account/bind_account'
-			// },
-			{
-				title: '修改绑定手机',
-				icon: 'phone',
-				type: 'cell',
-				url: '/pages/my/account/change_phone'
-			},
-			{
-				title: '手机解绑',
-				icon: 'minus-circle',
-				type: 'cell',
-				url: '/pages/my/account/remove_phone'
-			},
+				url: '/pages/user/info'
+			}, 
 		])  
 	async function handleLogout() {
 		user.logout()
@@ -147,5 +82,9 @@
 	}
 </style>
 <style lang="scss" scoped>
+	.w { 
+		padding-bottom: 60px;
+		padding-top: 44px;
+	}
 
 </style>

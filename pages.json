@@ -31,26 +31,30 @@
 				"navigationBarTextStyle": "white",
 				"navigationBarBackgroundColor": "#4aa3ff",
 				"backgroundColor": "#4aa3ff",
-				"onReachBottomDistance": 80
+				"onReachBottomDistance": 80,
+				"navigationStyle": "custom"
 			}
 		}, {
 			"path": "pages/todolist/todolist",
 			"style": {
 				"enablePullDownRefresh": false,
-				"onReachBottomDistance": 80
+				"onReachBottomDistance": 80,
+				"navigationStyle": "custom"
 			}
 
 		}, {
 			"path": "pages/history/history",
 			"style": {
 				"enablePullDownRefresh": false,
-				"onReachBottomDistance": 80
+				"onReachBottomDistance": 80,
+				"navigationStyle": "custom"
 			}
 
 		}, {
 			"path": "pages/user/user",
 			"style": {
 				"enablePullDownRefresh": false,
+				"navigationStyle": "custom",
 				"navigationStyle": "custom"
 			}
 
@@ -58,21 +62,23 @@
 			"path": "pages/user/info",
 			"style": {
 				"enablePullDownRefresh": false,
-				"navigationBarTitleText": "我的信息"
+				"navigationBarTitleText": "我的信息",
+				"navigationStyle": "custom"
 			}
 
 		}, {
 			"path": "pages/search/search",
-			"style": {
-
+			"style": { 
 				"enablePullDownRefresh": false,
-				"onReachBottomDistance": 80
+				"onReachBottomDistance": 80,
+				"navigationStyle": "custom"
 			}
 
 		}, {
 			"path": "pages/cpy/cpy",
 			"style": {
-				"enablePullDownRefresh": false
+				"enablePullDownRefresh": false,
+				"navigationStyle": "custom"
 			}
 
 		}, {
@@ -82,7 +88,8 @@
 				"navigationBarTitleText": "",
 				"navigationBarTextStyle": "white",
 				"navigationBarBackgroundColor": "#4aa3ff",
-				"backgroundColor": "#4aa3ff"
+				"backgroundColor": "#4aa3ff",
+				"navigationStyle": "custom"
 			}
 
 		}, {
@@ -90,28 +97,32 @@
 			"style": {
 				"navigationBarTitleText": "列表",
 				"enablePullDownRefresh": false,
-				"onReachBottomDistance": 80
+				"onReachBottomDistance": 80,
+				"navigationStyle": "custom"
 			}
 
 		}, {
 			"path": "pages/customer/addevent",
 			"style": {
 				"navigationBarTitleText": "添加跟进记录",
-				"enablePullDownRefresh": false
+				"enablePullDownRefresh": false,
+				"navigationStyle": "custom"
 			}
 
 		}, {
 			"path": "pages/cpy/cpy_edit",
 			"style": {
 				"navigationBarTitleText": "",
-				"enablePullDownRefresh": false
+				"enablePullDownRefresh": false,
+				"navigationStyle": "custom"
 			}
 
 		}, {
 			"path": "pages/user/setting",
 			"style": {
 				"navigationBarTitleText": "通用",
-				"enablePullDownRefresh": false
+				"enablePullDownRefresh": false,
+				"navigationStyle": "custom"
 			}
 
 		}
@@ -120,7 +131,8 @@
             "style" :                                                                                    
             {
                 "navigationBarTitleText": "",
-                "enablePullDownRefresh": false
+                "enablePullDownRefresh": false,
+				"navigationStyle": "custom"
             }
             
         }

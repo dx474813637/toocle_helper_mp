@@ -29,6 +29,11 @@ let ws = {
     send
 }
  
+ import pinia  from '@/stores/index.js';
+ import {
+ 	baseStore
+ } from '@/stores/base';
+const base = baseStore()
 function init() { 
     socketTask = uni.connectSocket({
         url: wsUrl,
@@ -39,10 +44,11 @@ function init() {
 		let data = uni.getStorageSync('WebSocketInfo')
 		let login = data.w_login
 		let token = data.w_token
+		let name = data.w_name
 		let login2 = data.login
 		
 		
-		send('{"type":"login","client_name":"'+login+'","room_id":"zhushou_xcx","token":"'+token+'","login":"'+login+'"}')
+		send('{"type":"login","client_name":"'+name+'","room_id":"zhushou_xcx","token":"'+token+'","login":"'+login+'"}')
 		// if(getCurrentPages() && getCurrentPages()[0]) send('{"type":"xcx","client_name":"'+login+'","rawmex_login":"'+login2+'","room_id":"zhushou_xcx","token":"'+token+'","login":"'+login+'","content":"'+getCurrentPages()[0].$page.fullPath+'"}')
 		
         clearInterval(heartBeatInterval)
@@ -54,14 +60,17 @@ function init() {
     })
     socketTask.onMessage((res) => {
 //         // 每次返回的数据不一样,需要加入判断
-//         console.log('收到服务器内容',JSON.parse(res.data))
-//         let result = JSON.parse(res.data)
+        // console.log('收到服务器内容',JSON.parse(res.data))
+        let result = JSON.parse(res.data)
 // 　　　　 //这边可以根据推送的数据, 做相应的 do somethings, 根据自己需求, 下面只是例子..
 //         // token存在,说明,小程序用户点击了授权(比如推送的数据有token,那就做什么事xxxx
-//         if(result.token){
-//             uni.setStorageSync('token', result.token)
-//             uni.setStorageSync('userInfo', JSON.stringify(result.userInfo))
-//         }
+        if(result.type == 'login' || result.type == 'logout'){ 
+			base.$patch({ online: { count: result.count } })
+        }
+		if(result.type == 'say') { 
+			base.getMsg(result) 
+		}
+		
 //         // client_id存在,说明连websocket接成功
 //         if(result.msg=="连接成功"){
 //             uni.setStorageSync('client_id', result.data.client_id);

@@ -1,5 +1,7 @@
 <template>
-	<view class="w u-p-20">
+	<view class="w">
+		<navBar fixed bgColor="#fff" backBtn title="添加跟进进度" ></navBar>
+		<u-status-bar></u-status-bar>
 		<view class="u-p-20 bg-white">
 			<u--form
 				labelPosition="left"
@@ -60,9 +62,7 @@
 <script setup>
 	import {
 		onLoad,
-		onShow,
-		onShareTimeline,
-		onShareAppMessage,
+		onShow, 
 		onReady,
 	} from "@dcloudio/uni-app";
 	import {
@@ -202,6 +202,10 @@
 		min-height: 100vh;
 	}
 </style>
-<style scoped lang="scss">
+<style lang="scss" scoped>
+	.w { 
+		padding-bottom: 60px;
+		padding-top: 44px;
+	}
 
 </style>

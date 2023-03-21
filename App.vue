@@ -48,14 +48,8 @@
 			});
 		}
 		routingIntercept($ws)  
-		if(!user.user_info.user) {
-			const res = await user.getUserInfo()
-			if(res.code == 2) {
-				uni.redirectTo({
-					url: '/pages/index/index'
-				})
-			}
-		}
+		 await user.getUserInfo()
+		
 	});
 	onShow(async (options) => {
 		console.log('opt.query', options.query)  
@@ -63,7 +57,12 @@
 			base.saveShareInfo(options.query.share_other) 
 		} 
 		if(uni.getStorageSync('WebSocketInfo')) $ws.init()
-		
+		 
+		 if(options.query?.route && options.query.route != '/pages/index/index' && !user.user_info.user) {
+		 	uni.redirectTo({
+		 		url: '/pages/index/index', 
+		 	})
+		 }
 		// if(!user.user_info.user) {
 		// 	uni.redirectTo({
 		// 		url: '/pages/index/index'

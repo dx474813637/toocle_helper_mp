@@ -1,5 +1,7 @@
 <template>
 	<view class="w">
+		<navBar fixed bgColor="#fff" :title="onlineControl.title" ></navBar><u-notify ref="notify"></u-notify>
+		<u-status-bar></u-status-bar>
 		<view class="header u-flex bg-white u-flex-items-center u-flex-between u-p-l-20 u-p-r-20">
 			<image 
 				class="header-banner" 
@@ -17,7 +19,7 @@
 				></u-tag>
 			</view>
 		</view>
-		<u-sticky zIndex="50" bgColor="#fff">
+		<u-sticky zIndex="50" bgColor="#fff" :offsetTop="base.sys.safeAreaInsets.top + 44 ">
 			<view class="header-sticky">
 				<view class="search-w u-p-l-20 u-p-r-20">
 					<u-search 
@@ -134,14 +136,14 @@
 		reactive,
 		computed
 	} from 'vue'
-	import {share} from '@/composition/share.js'
 	import { inject } from 'vue' 
 	// import menusBar from '@/components/menusBar/menusBa	r.vue'
 	import {
 		baseStore,
 		menusStore
-	} from '@/stores/base';
-	share()
+	} from '@/stores/base'; 
+	import {share} from '@/composition/share.js'
+	const {setOnlineControl, onlineControl} = share() 
 	const base = baseStore()
 	const menus = menusStore()
 	const $api = inject('$api');
@@ -191,6 +193,7 @@
 		if(options.hasOwnProperty('area')) {
 			params.area = options.area
 		}
+		
 		handleSearch()
 		uni.$on('update',function(data){
 			console.log('监听到事件来自 update ，携带参数：' , data);
@@ -237,6 +240,7 @@
 		loadstatus.value = 'loading'
 		const res = await $api.search_company({ params })
 		if(res.code == 1) {
+			setOnlineControl(res)
 			cpy_list.value = [...cpy_list.value, ...res.list.map(ele => {
 				ele.joinstatus = 'error'
 				return {...ele}
@@ -326,19 +330,31 @@
 		background-color: #f8f8f8;
 		min-height: 100vh;
 	}
+	:deep(.filter-w .u-tag--mini) {
+		height: 25px!important;
+		line-height: 25px!important;
+		box-sizing: border-box;
+	}
+	:deep(.filter-w .u-tag__text--mini) {
+		font-size: 14px!important;
+	}
 </style>
 <style lang="scss" scoped>
 	.w { 
 		padding-bottom: 60px;
+		padding-top: 44px;
 	}
 	.header-sticky {
 		border-bottom: 1rpx solid #eee;
 	}
 	.header {
-		height: 50px;
+		height: 45px;
+		image {
+			height: 35px;
+		}
 	}
 	.filter-w {
-		height: 35px;
+		height: 40px;
 		.item {
 			flex: 0 0 50%;
 			height: 100%;
@@ -376,12 +392,12 @@
 	}
 	.tags {
 		background-color: #ecf5ff;
-		height: 22px;
-		line-height: 22px;
+		height: 25px;
+		line-height: 25px;
 		padding: 0 5px;
 		border-radius: 3px;
-		font-size: 12px;
-		line-height: 12px;
+		font-size: 14px;
+		line-height: 14px;
 		color: #3c9cff;
 	}
 </style>
